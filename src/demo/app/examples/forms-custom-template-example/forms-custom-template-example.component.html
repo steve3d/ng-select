@@ -1,7 +1,7 @@
 <form [formGroup]="heroForm">
     <div class="form-group">
         <label for="photos">Custom templates</label>
-        <ng-select [items]="photos"
+        <ng-select class="form-control"  [items]="photos"
                    bindLabel="title"
                    bindValue="thumbnailUrl"
                    placeholder="Select photo"
@@ -34,7 +34,7 @@
         <div class="modal-body">
             <div class="form-group">
                 <label for="album">Favorite photo</label>
-                <ng-select [items]="photos"
+                <ng-select class="form-control"  [items]="photos"
                            (change)="changePhoto($event)"
                            #select
                            bindLabel="title"

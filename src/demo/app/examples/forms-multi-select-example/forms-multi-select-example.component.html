@@ -1,7 +1,7 @@
 <form [formGroup]="heroForm">
     <div class="form-group">
         <label for="state">City</label>
-        <ng-select *ngIf="isCitiesControlVisible"
+        <ng-select class="form-control"  *ngIf="isCitiesControlVisible"
                    [items]="cities"
                    bindLabel="name"
                    bindValue="id"

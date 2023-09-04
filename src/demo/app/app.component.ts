@@ -16,7 +16,7 @@ export class AppComponent {
     version: string = window['ngSelectVersion'];
     exampleSourceUrl: string;
     dir: 'ltr' | 'rtl' = 'ltr';
-    theme: 'default' | 'ant' | 'material' = 'default';
+    theme: 'default' | 'ant' | 'material' | 'bootstrap5' = 'bootstrap5';
 
     @HostBinding('class') get themeClass() { return `${this.theme}-theme`; }
 

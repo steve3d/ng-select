@@ -4,7 +4,7 @@
     visible.</p>
 
 <div class="overflow-box">
-    <ng-select [items]="people | async"
+    <ng-select class="form-control"  [items]="people | async"
                bindLabel="company"
                placeholder="Select item"
                [(ngModel)]="selected">
@@ -15,7 +15,7 @@
 <p>It can be fixed by appending dropdown to body or other parent element.</p>
 
 <div class="overflow-box">
-    <ng-select [items]="people | async"
+    <ng-select class="form-control"  [items]="people | async"
                bindLabel="company"
                placeholder="Select item"
                appendTo="body"
@@ -28,7 +28,7 @@
 <br>
 <div class="scrollable-box">
     <div class="overflow-box">
-        <ng-select [items]="people | async"
+        <ng-select class="form-control"  [items]="people | async"
                    bindLabel="company"
                    placeholder="Select item"
                    appendTo=".scrollable-box"

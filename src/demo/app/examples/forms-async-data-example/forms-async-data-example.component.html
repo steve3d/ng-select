@@ -1,7 +1,7 @@
 <form [formGroup]="heroForm">
     <div class="form-group">
         <label for="album">Loading async data</label>
-        <ng-select [items]="albums"
+        <ng-select class="form-control"  [items]="albums"
                    #select
                    bindLabel="title"
                    dropdownPosition="auto"

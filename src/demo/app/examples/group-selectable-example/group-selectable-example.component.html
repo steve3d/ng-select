@@ -1,5 +1,5 @@
 <p>Groups can be made selectable. By default group acts as a separate option.</p>
-<ng-select [items]="accounts"
+<ng-select class="form-control"  [items]="accounts"
            bindLabel="name"
            groupBy="country"
            [multiple]="true"
@@ -18,7 +18,7 @@
 <p>Using <b>[selectableGroupAsModel]="false"</b> selecting group will select all of its children but not group itself.
 </p>
 
-<ng-select [items]="accounts"
+<ng-select class="form-control"  [items]="accounts"
            bindLabel="name"
            groupBy="country"
            [multiple]="true"

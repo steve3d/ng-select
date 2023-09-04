@@ -1,7 +1,7 @@
 <p>Use <b>typeahead</b> to subscribe to search term and load async items.</p>
 <label>Multi select + Typeahead + Custom items (tags)</label>
 
-<ng-select [items]="people$ | async"
+<ng-select class="form-control"  [items]="people$ | async"
            bindLabel="name"
            [addTag]="true"
            [multiple]="true"

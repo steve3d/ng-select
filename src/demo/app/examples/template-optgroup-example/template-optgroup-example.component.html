@@ -1,6 +1,6 @@
 <p>Custom label option and optgroup templates</p>
 
-<ng-select [items]="cities" groupBy="avatar" [(ngModel)]="selectedCity" bindLabel="name" bindValue="name">
+<ng-select class="form-control"  [items]="cities" groupBy="avatar" [(ngModel)]="selectedCity" bindLabel="name" bindValue="name">
     <ng-template ng-label-tmp let-item="item">
         <img height="15" width="15" [src]="item.avatar"/>
         <b>{{item.name}}</b>

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 type langDir = 'ltr' | 'rtl';
-type theme = 'default' | 'ant' | 'material';
+type theme = 'default' | 'ant' | 'material' | 'bootstrap5';
 
 @Component({
     selector: 'layout-header',
@@ -31,6 +31,8 @@ type theme = 'default' | 'ant' | 'material';
                         </button>
                         <button (click)="setTheme('ant')" class="dropdown-item btn-sm">Ant Design theme
                         </button>
+                        <button (click)="setTheme('bootstrap5')" class="dropdown-item btn-sm">Bootstrap 5 theme
+                        </button>
                     </div>
                 </div>
 
@@ -42,6 +44,11 @@ type theme = 'default' | 'ant' | 'material';
                         <button (click)="changeDirTo('rtl')" class="dropdown-item btn-sm text-uppercase">rtl</button>
                     </div>
                 </div>
+
+                <button class="btn btn-outline-secondary btn-sm text-uppercase"
+                        (click)="toggleColorMode()">
+                    {{colorMode}}
+                </button>
 
                 <ul class="navbar-nav mr-auto">
                 </ul>
@@ -62,8 +69,10 @@ export class LayoutHeaderComponent {
     @Input() dir: langDir;
     @Input() theme = 'default';
     @Input() version: string;
+    @Input() colorMode = 'light';
     @Output() dirChange = new EventEmitter<langDir>();
     @Output() themeChange = new EventEmitter<theme>();
+    @Output() colorModeChange = new EventEmitter<string>();
 
     setTheme(theme: theme) {
         this.theme = theme;
@@ -74,6 +83,10 @@ export class LayoutHeaderComponent {
         this.dir = dir;
         this.dirChange.emit(dir);
     }
+
+  toggleColorMode() {
+    this.colorMode = document.body.dataset['bsTheme'] = document.body.dataset['bsTheme'] === 'dark' ? 'light' : 'dark';
+  }
 }
 
 

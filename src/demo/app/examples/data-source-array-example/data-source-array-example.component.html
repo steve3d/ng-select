@@ -2,7 +2,7 @@
     You can also set array of objects as items input
 </p>
 
-<ng-select [items]="people"
+<ng-select class="form-control"  [items]="people"
            bindLabel="name"
            bindValue="id"
            [(ngModel)]="selectedPersonId">
@@ -14,6 +14,6 @@
     booleans
 </p>
 
-<ng-select [items]="simpleItems"
+<ng-select class="form-control"  [items]="simpleItems"
            [(ngModel)]="selectedSimpleItem">
 </ng-select>
