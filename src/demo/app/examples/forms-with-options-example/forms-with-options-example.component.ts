@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { NgOptionComponent, NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
@@ -7,19 +7,17 @@ import { NgOptionComponent, NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './forms-with-options-example.component.html',
 	styleUrls: ['./forms-with-options-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [FormsModule, ReactiveFormsModule, NgSelectComponent, NgOptionComponent],
+	imports: [FormRoot, FormField, NgSelectComponent, NgOptionComponent],
 })
 export class FormsWithOptionsExampleComponent implements OnInit {
-	private fb = inject(FormBuilder);
-
 	basePath;
-	heroForm: FormGroup;
+	readonly hero = signal({
+		heroId: 'batman',
+		agree: null as boolean | null,
+	});
+	readonly heroForm = form(this.hero);
 
 	ngOnInit() {
 		this.basePath = window.location.host.includes('localhost') ? '' : '/ng-select';
-		this.heroForm = this.fb.group({
-			heroId: 'batman',
-			agree: null,
-		});
 	}
 }

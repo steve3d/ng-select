@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
@@ -7,12 +7,11 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './forms-multi-select-example.component.html',
 	styleUrls: ['./forms-multi-select-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [FormsModule, ReactiveFormsModule, NgSelectComponent],
+	imports: [FormRoot, FormField, NgSelectComponent],
 })
-export class FormsMultiSelectExampleComponent implements OnInit {
-	private fb = inject(FormBuilder);
-
-	heroForm: FormGroup;
+export class FormsMultiSelectExampleComponent {
+	readonly hero = signal({ selectedCitiesIds: [] as number[] });
+	readonly heroForm = form(this.hero);
 	isCitiesControlVisible = true;
 	cities: any[] = [
 		{ id: 1, name: 'New York' },
@@ -22,17 +21,11 @@ export class FormsMultiSelectExampleComponent implements OnInit {
 		{ id: 5, name: 'Paris' },
 	];
 
-	ngOnInit() {
-		this.heroForm = this.fb.group({
-			selectedCitiesIds: [],
-		});
-	}
-
 	toggleCitiesControl() {
 		this.isCitiesControlVisible = !this.isCitiesControlVisible;
 	}
 
 	clearCities() {
-		this.heroForm.get('selectedCitiesIds').patchValue([]);
+		this.hero.update((hero) => ({ ...hero, selectedCitiesIds: [] }));
 	}
 }

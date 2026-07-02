@@ -1,4 +1,4 @@
-<form [formGroup]="heroForm">
+<form [formRoot]="heroForm">
 	<div class="form-group">
 		<label for="photos">Custom templates</label>
 		<ng-select
@@ -8,13 +8,13 @@
 			placeholder="Select photo"
 			labelForId="photos"
 			[virtualScroll]="true"
-			formControlName="photo">
+			[formField]="heroForm.photo">
 			<ng-template ng-label-tmp let-item="item">
-				<img height="15" width="15" [src]="item.thumbnailUrl" />
+				<img height="15" width="15" [src]="item.thumbnailUrl" alt="" />
 				<span>{{ item.title }}</span>
 			</ng-template>
 			<ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-				<img height="15" width="15" [src]="item.thumbnailUrl" />
+				<img height="15" width="15" [src]="item.thumbnailUrl" alt="" />
 				<span [ngOptionHighlight]="search">{{ item.title }}</span>
 			</ng-template>
 		</ng-select>
@@ -45,13 +45,13 @@
 					(keyup.esc)="$event.preventDefault()"
 					appendTo="body"
 					[virtualScroll]="true"
-					formControlName="photo">
+					[formField]="heroForm.photo">
 					<ng-template ng-label-tmp let-item="item">
-						<img height="15" width="15" [src]="item.thumbnailUrl" />
+						<img height="15" width="15" [src]="item.thumbnailUrl" alt="" />
 						<span>{{ item.title }}</span>
 					</ng-template>
 					<ng-template ng-option-tmp let-item="item" let-index="index">
-						<img height="15" width="15" [src]="item.thumbnailUrl" />
+						<img height="15" width="15" [src]="item.thumbnailUrl" alt="" />
 						<span>{{ item.title }}</span>
 					</ng-template>
 				</ng-select>

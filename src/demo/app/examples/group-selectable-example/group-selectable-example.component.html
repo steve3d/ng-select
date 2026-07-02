@@ -6,7 +6,7 @@
 	[multiple]="true"
 	[compareWith]="compareAccounts"
 	[selectableGroup]="true"
-	[(ngModel)]="selectedAccount">
+	[(value)]="selectedAccount">
 	<ng-template ng-optgroup-tmp let-item="item">
 		{{ item.country || 'Unnamed group' }}
 	</ng-template>
@@ -27,7 +27,7 @@
 	[selectableGroup]="true"
 	[selectableGroupAsModel]="false"
 	[compareWith]="compareAccounts"
-	[(ngModel)]="selectedAccounts">
+	[(value)]="selectedAccounts">
 	<ng-template ng-optgroup-tmp let-item="item">
 		{{ item.country || 'Unnamed group' }}
 	</ng-template>

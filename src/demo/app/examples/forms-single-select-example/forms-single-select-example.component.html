@@ -1,4 +1,4 @@
-<form [formGroup]="heroForm" novalidate>
+<form [formRoot]="heroForm">
 	<div class="form-group">
 		<label for="age">Age</label>
 		<ng-select
@@ -7,9 +7,9 @@
 			[selectOnTab]="true"
 			bindValue="value"
 			labelForId="age"
-			(ngModelChange)="showConfirm(confirmation)"
+			(valueChange)="showConfirm(confirmation)"
 			placeholder="Select age"
-			formControlName="age">
+			[formField]="heroForm.age">
 		</ng-select>
 		<br />
 		<button class="btn btn-secondary btn-sm" (click)="toggleAgeDisable()">Toggle disabled</button>

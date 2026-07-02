@@ -1,6 +1,6 @@
 <p>You can provide custom property for display and selected value.</p>
 
-<ng-select [items]="cities" bindLabel="name" bindValue="id" [(ngModel)]="selectedCityId"> </ng-select>
+<ng-select [items]="cities" bindLabel="name" bindValue="id" [(value)]="selectedCityId"> </ng-select>
 
 <br />
 Selected city ID: {{ selectedCityId | json }}

@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataService } from '../data.service';
-import { FormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
@@ -10,7 +9,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './multi-select-hidden-example.component.html',
 	styleUrls: ['./multi-select-hidden-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, AsyncPipe],
+	imports: [NgSelectComponent, AsyncPipe],
 })
 export class MultiSelectHiddenExampleComponent implements OnInit {
 	private dataService = inject(DataService);

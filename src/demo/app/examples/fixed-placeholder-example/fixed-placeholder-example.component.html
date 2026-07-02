@@ -1,7 +1,13 @@
 <p>In this example we show fixed placeholder when a value is selected. Use material theme to see it in action.</p>
 
 <div class="form-check">
-	<input [(ngModel)]="isPlaceholderFixed" class="form-check-input" id="is-fixed" type="checkbox" value="" />
+	<input
+		[checked]="isPlaceholderFixed"
+		(change)="isPlaceholderFixed = $any($event.target).checked"
+		class="form-check-input"
+		id="is-fixed"
+		type="checkbox"
+		value="" />
 	<label class="form-check-label" for="is-fixed"> Set Placeholder Fixed / Unfixed </label>
 </div>
 

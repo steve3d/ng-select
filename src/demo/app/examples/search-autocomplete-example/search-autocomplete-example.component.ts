@@ -2,7 +2,6 @@ import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/cor
 import { concat, Observable, of, Subject } from 'rxjs';
 import { DataService, Person } from '../data.service';
 import { catchError, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import { FormsModule } from '@angular/forms';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
@@ -11,7 +10,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './search-autocomplete-example.component.html',
 	styleUrls: ['./search-autocomplete-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, AsyncPipe, JsonPipe],
+	imports: [NgSelectComponent, AsyncPipe, JsonPipe],
 })
 export class SearchAutocompleteExampleComponent implements OnInit {
 	private dataService = inject(DataService);

@@ -12,14 +12,14 @@
 
 <h6>Without popover - dropdown stays in normal flow</h6>
 <div class="clipped-box">
-	<ng-select [items]="people()" bindLabel="name" [popover]="false" placeholder="Select a person" [(ngModel)]="selected1"> </ng-select>
+	<ng-select [items]="people()" bindLabel="name" [popover]="false" placeholder="Select a person" [(value)]="selected1"> </ng-select>
 </div>
 
 <br />
 
 <h6>With popover - dropdown is rendered in a top-layer</h6>
 <div class="clipped-box">
-	<ng-select [items]="people()" bindLabel="name" [popover]="true" placeholder="Select a person" [(ngModel)]="selected2"> </ng-select>
+	<ng-select [items]="people()" bindLabel="name" [popover]="true" placeholder="Select a person" [(value)]="selected2"> </ng-select>
 </div>
 
 <br />

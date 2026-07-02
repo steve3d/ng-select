@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgLabelTemplateDirective, NgPlaceholderTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
@@ -7,7 +6,7 @@ import { NgLabelTemplateDirective, NgPlaceholderTemplateDirective, NgSelectCompo
 	templateUrl: './template-placeholder-example.component.html',
 	styleUrls: ['./template-placeholder-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgPlaceholderTemplateDirective, NgLabelTemplateDirective],
+	imports: [NgSelectComponent, NgPlaceholderTemplateDirective, NgLabelTemplateDirective],
 })
 export class TemplatePlaceholderExampleComponent {
 	cities = [

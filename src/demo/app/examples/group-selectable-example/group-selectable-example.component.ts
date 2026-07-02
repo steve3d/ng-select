@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgOptgroupTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 import { JsonPipe } from '@angular/common';
 
@@ -8,7 +7,7 @@ import { JsonPipe } from '@angular/common';
 	templateUrl: './group-selectable-example.component.html',
 	styleUrls: ['./group-selectable-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgOptgroupTemplateDirective, JsonPipe],
+	imports: [NgSelectComponent, NgOptgroupTemplateDirective, JsonPipe],
 })
 export class GroupSelectableExampleComponent implements OnInit {
 	selectedAccount = [{ country: 'Colombia' }];

@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
@@ -7,7 +6,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './bindings-nested-example.component.html',
 	styleUrls: ['./bindings-nested-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule],
+	imports: [NgSelectComponent],
 })
 export class BindingsNestedExampleComponent implements OnInit {
 	countries = [

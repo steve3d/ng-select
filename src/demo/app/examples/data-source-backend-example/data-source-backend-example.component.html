@@ -3,6 +3,6 @@
 	<b> | async</b> pipe
 </p>
 
-<ng-select [items]="people$ | async" bindLabel="name" autofocus bindValue="id" [(ngModel)]="selectedPersonId"> </ng-select>
+<ng-select [items]="people$ | async" bindLabel="name" autofocus bindValue="id" [(value)]="selectedPersonId"> </ng-select>
 
 <br />Selected: {{ selectedPersonId }}

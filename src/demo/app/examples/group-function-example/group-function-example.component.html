@@ -10,7 +10,7 @@
 	[groupBy]="groupByFn"
 	[groupValue]="groupValueFn"
 	[multiple]="true"
-	[(ngModel)]="selectedAccounts">
+	[(value)]="selectedAccounts">
 	<ng-template ng-optgroup-tmp let-item="item">
 		<span style="vertical-align: middle">{{ item.name }}</span>
 		<span class="ml-1 badge badge-secondary">{{ item.total }}</span>

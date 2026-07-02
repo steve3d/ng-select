@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { NgOptgroupTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 
@@ -8,7 +7,7 @@ import { NgOptgroupTemplateDirective, NgSelectComponent } from '@ng-select/ng-se
 	templateUrl: './group-default-example.component.html',
 	styleUrls: ['./group-default-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgOptgroupTemplateDirective, JsonPipe],
+	imports: [NgSelectComponent, NgOptgroupTemplateDirective, JsonPipe],
 })
 export class GroupDefaultExampleComponent implements OnInit {
 	selectedAccount = 'Adam';

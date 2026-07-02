@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { disabled, form, FormField, FormRoot, required, schema } from '@angular/forms/signals';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
@@ -8,31 +8,29 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './forms-single-select-example.component.html',
 	styleUrls: ['./forms-single-select-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [FormsModule, ReactiveFormsModule, NgSelectComponent],
+	imports: [FormRoot, FormField, NgSelectComponent],
 })
-export class FormsSingleSelectExampleComponent implements OnInit {
-	private fb = inject(FormBuilder);
+export class FormsSingleSelectExampleComponent {
 	private modalService = inject(NgbModal);
 
-	heroForm: FormGroup;
+	readonly hero = signal({ age: null as string | null });
+	readonly ageDisabled = signal(false);
+	readonly heroForm = form(
+		this.hero,
+		schema((p) => {
+			required(p.age);
+			disabled(p.age, { when: () => this.ageDisabled() });
+		}),
+	);
+
 	ages: any[] = [
 		{ value: '<18', label: 'Under 18' },
 		{ value: '18', label: '18' },
 		{ value: '>18', label: 'More than 18' },
 	];
 
-	ngOnInit() {
-		this.heroForm = this.fb.group({
-			age: [null, Validators.required],
-		});
-	}
-
 	toggleAgeDisable() {
-		if (this.heroForm.controls.age.disabled) {
-			this.heroForm.controls.age.enable();
-		} else {
-			this.heroForm.controls.age.disable();
-		}
+		this.ageDisabled.update((disabled) => !disabled);
 	}
 
 	showConfirm(content) {

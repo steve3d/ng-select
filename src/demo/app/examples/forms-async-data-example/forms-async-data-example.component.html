@@ -1,4 +1,4 @@
-<form [formGroup]="heroForm">
+<form [formRoot]="heroForm">
 	<div class="form-group">
 		<label for="album">Loading async data</label>
 		<ng-select
@@ -10,7 +10,7 @@
 			labelForId="album"
 			placeholder="Select album"
 			[virtualScroll]="true"
-			formControlName="album">
+			[formField]="heroForm.album">
 			<ng-template ng-option-tmp let-item="item" let-search="searchTerm">
 				<div>
 					<span>Title: </span><span [ngOptionHighlight]="search">{{ item.title }}</span>

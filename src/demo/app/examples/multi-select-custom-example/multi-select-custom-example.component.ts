@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataService } from '../data.service';
-import { FormsModule } from '@angular/forms';
 import { NgMultiLabelTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 import { AsyncPipe, SlicePipe } from '@angular/common';
 
@@ -10,7 +9,7 @@ import { AsyncPipe, SlicePipe } from '@angular/common';
 	templateUrl: './multi-select-custom-example.component.html',
 	styleUrls: ['./multi-select-custom-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgMultiLabelTemplateDirective, AsyncPipe, SlicePipe],
+	imports: [NgSelectComponent, NgMultiLabelTemplateDirective, AsyncPipe, SlicePipe],
 })
 export class MultiSelectCustomExampleComponent implements OnInit {
 	private dataService = inject(DataService);

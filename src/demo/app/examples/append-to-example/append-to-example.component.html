@@ -2,7 +2,7 @@
 <p>If you place ng-select inside container with fixed height and hidden overflow then dropdown will not be fully visible.</p>
 
 <div class="overflow-box">
-	<ng-select [items]="people | async" bindLabel="company" placeholder="Select item" [(ngModel)]="selected"> </ng-select>
+	<ng-select [items]="people | async" bindLabel="company" placeholder="Select item" [(value)]="selected"> </ng-select>
 </div>
 
 <br />
@@ -19,7 +19,7 @@
 <br />
 <div class="scrollable-box">
 	<div class="overflow-box">
-		<ng-select [items]="people | async" bindLabel="company" placeholder="Select item" appendTo=".scrollable-box" [(ngModel)]="selected3"> </ng-select>
+		<ng-select [items]="people | async" bindLabel="company" placeholder="Select item" appendTo=".scrollable-box" [(value)]="selected3"> </ng-select>
 	</div>
 </div>
 

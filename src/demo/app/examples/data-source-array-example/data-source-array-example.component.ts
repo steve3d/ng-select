@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { DataService, Person } from '../data.service';
 
@@ -8,7 +7,7 @@ import { DataService, Person } from '../data.service';
 	templateUrl: './data-source-array-example.component.html',
 	styleUrls: ['./data-source-array-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule],
+	imports: [NgSelectComponent],
 })
 export class DataSourceArrayExampleComponent implements OnInit {
 	private dataService = inject(DataService);

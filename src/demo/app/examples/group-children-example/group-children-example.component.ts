@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { NgOptgroupTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 
@@ -8,7 +7,7 @@ import { NgOptgroupTemplateDirective, NgOptionTemplateDirective, NgSelectCompone
 	templateUrl: './group-children-example.component.html',
 	styleUrls: ['./group-children-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgOptgroupTemplateDirective, NgOptionTemplateDirective, JsonPipe],
+	imports: [NgSelectComponent, NgOptgroupTemplateDirective, NgOptionTemplateDirective, JsonPipe],
 })
 export class GroupChildrenExampleComponent implements OnInit {
 	selectedProjects = [];

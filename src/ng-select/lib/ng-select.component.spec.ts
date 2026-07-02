@@ -1,7 +1,6 @@
 import { NgClass } from '@angular/common';
 import { Component, DebugElement, ErrorHandler, Type, viewChild, ViewEncapsulation } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import type { Mock } from 'vitest';
@@ -260,7 +259,7 @@ describe('NgSelectComponent', () => {
 		it('should create items from ng-option', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity">
+				`<ng-select [(value)]="selectedCity">
 					<ng-option [value]="true">Yes</ng-option>
 					<ng-option [value]="false">No</ng-option>
 				</ng-select>`,
@@ -313,13 +312,13 @@ describe('NgSelectComponent', () => {
 	describe('Model bindings and data changes', () => {
 		let select: NgSelectComponent;
 
-		it('should update ngModel on value change', async () => {
+		it('should update value on value change', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -333,13 +332,13 @@ describe('NgSelectComponent', () => {
 			expect(fixture.componentInstance.selectedCity).toEqual(null);
 		});
 
-		it('should update internal model on ngModel change', async () => {
+		it('should update internal model on value change', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -366,7 +365,7 @@ describe('NgSelectComponent', () => {
                             [items]="cities"
                             bindLabel="name"
                             [clearable]="true"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                     </ng-select>
                 }`,
 			);
@@ -387,14 +386,14 @@ describe('NgSelectComponent', () => {
 			expect(fixture.componentInstance.select().selectedItems).toEqual([]);
 		});
 
-		it('should set items correctly after ngModel set first when bindValue is used', async () => {
+		it('should set items correctly after value set first when bindValue is used', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         bindValue="id"
                         [clearable]="true"
-                        [(ngModel)]="selectedCityId">
+                        [(value)]="selectedCityId">
                 </ng-select>`,
 			);
 
@@ -414,13 +413,13 @@ describe('NgSelectComponent', () => {
 			]);
 		});
 
-		it('should set items correctly after ngModel set first when bindValue is not used', async () => {
+		it('should set items correctly after value set first when bindValue is not used', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -440,7 +439,7 @@ describe('NgSelectComponent', () => {
 			]);
 		});
 
-		it('should set items correctly after ngModel set first when bindValue is used from NgSelectConfig', async () => {
+		it('should set items correctly after value set first when bindValue is used from NgSelectConfig', async () => {
 			const config = new NgSelectConfig();
 			config.bindValue = 'id';
 			const fixture = createTestingModule(
@@ -448,7 +447,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCityId">
+                        [(value)]="selectedCityId">
                 </ng-select>`,
 				config,
 			);
@@ -478,7 +477,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         bindValue="id"
                         [clearable]="true"
-                        [(ngModel)]="selectedCityId">
+                        [(value)]="selectedCityId">
                 </ng-select>`,
 				config,
 			);
@@ -506,7 +505,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         bindValue=""
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -532,7 +531,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -548,7 +547,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -561,14 +560,14 @@ describe('NgSelectComponent', () => {
 			expect(options[0].innerText).toBe('<img src="azd" (error)="alert(1)" />');
 		});
 
-		it('should set items correctly after ngModel set first when typeahead and single select is used', async () => {
+		it('should set items correctly after value set first when typeahead and single select is used', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     [typeahead]="filter"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -596,7 +595,7 @@ describe('NgSelectComponent', () => {
 			expect(newYork.selected).toBeTruthy();
 		});
 
-		it('should set items correctly after ngModel set first when typeahead and multi-select is used', async () => {
+		it('should set items correctly after value set first when typeahead and multi-select is used', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
@@ -604,7 +603,7 @@ describe('NgSelectComponent', () => {
                     [multiple]="true"
                     [typeahead]="filter"
                     placeholder="select value"
-                    [(ngModel)]="selectedCities">
+                    [(value)]="selectedCities">
                 </ng-select>`,
 			);
 
@@ -645,7 +644,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select
                     [items]="cities"
                     [clearable]="true"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -664,13 +663,13 @@ describe('NgSelectComponent', () => {
 			);
 		});
 
-		it('should bind ngModel object even if items are empty', async () => {
+		it('should bind value object even if items are empty', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -688,12 +687,12 @@ describe('NgSelectComponent', () => {
 			]);
 		});
 
-		it('should bind ngModel simple value even if items are empty', async () => {
+		it('should bind value simple value even if items are empty', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="citiesNames"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -717,7 +716,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -746,7 +745,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -772,7 +771,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         bindValue="value"
                         [clearable]="true"
-                        [(ngModel)]="selectedCityId">
+                        [(value)]="selectedCityId">
                 </ng-select>`,
 			);
 
@@ -798,7 +797,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -820,7 +819,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         [multiple]="true"
                         [clearable]="true"
-                        [(ngModel)]="selectedCities">
+                        [(value)]="selectedCities">
                 </ng-select>`,
 			);
 
@@ -843,7 +842,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -864,7 +863,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         [multiple]="true"
                         [clearable]="true"
-                        [(ngModel)]="selectedCities">
+                        [(value)]="selectedCities">
                 </ng-select>`,
 			);
 
@@ -889,7 +888,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         [multiple]="true"
                         [clearable]="true"
-                        [(ngModel)]="selectedCities">
+                        [(value)]="selectedCities">
                 </ng-select>`,
 			);
 
@@ -910,7 +909,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 			select = fixture.componentInstance.select();
@@ -933,7 +932,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             bindLabel="name"
                             bindValue="id"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                 </ng-select>`,
 			);
 
@@ -955,7 +954,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="countries"
                             bindLabel="description.name"
-                            [(ngModel)]="selectedCountry">
+                            [(value)]="selectedCountry">
                 </ng-select>`,
 			);
 
@@ -984,7 +983,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="countries"
                             bindLabel="description.name"
                             bindValue="description.id"
-                            [(ngModel)]="selectedCountry">
+                            [(value)]="selectedCountry">
                 </ng-select>`,
 			);
 
@@ -1010,7 +1009,7 @@ describe('NgSelectComponent', () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="citiesNames"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -1032,7 +1031,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -1059,7 +1058,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -1084,7 +1083,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -1106,7 +1105,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         [clearable]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -1126,7 +1125,7 @@ describe('NgSelectComponent', () => {
 			it('should reset to empty array', async () => {
 				const fixture = createTestingModule(
 					NgSelectTestComponent,
-					`<ng-select [(ngModel)]="selectedCityId">
+					`<ng-select [(value)]="selectedCityId">
                         @for (city of cities; track city) {
                             <ng-option [value]="city.id">{{city.name}}</ng-option>
                         }
@@ -1145,27 +1144,27 @@ describe('NgSelectComponent', () => {
 			it('should update ng-option when updated asynchronously', async () => {
 				const fixture = createTestingModule(
 					NgSelectTestComponent,
-					`<ng-select [(ngModel)]="selectedCityId">
+					`<ng-select [(value)]="selectedCityId">
                         @for (city of cities; track city) {
                             <ng-option [value]="city.id">{{city.name}}</ng-option>
                         }
                     </ng-select>`,
 				);
 				select = fixture.componentInstance.select();
-				expect(select.items().length).toEqual(5);
+				expect(select.itemsList.items.length).toEqual(5);
 
 				fixture.componentInstance.cities = [
 					{ id: 1, name: 'New York' },
 					{ id: 2, name: 'London' },
 				];
 				await tickAndDetectChanges(fixture);
-				expect(select.items().length).toEqual(2);
+				expect(select.itemsList.items.length).toEqual(2);
 			});
 
 			it('should apply ng-option host classes to the root dropdown option', async () => {
 				const fixture = createTestingModule(
 					NgSelectTestComponent,
-					`<ng-select [(ngModel)]="selectedCityId">
+					`<ng-select [(value)]="selectedCityId">
                         @for (city of cities; track city) {
                             <ng-option [value]="city.id" [ngClass]="city.optionClass"><span>{{city.name}}</span></ng-option>
                         }
@@ -1191,7 +1190,7 @@ describe('NgSelectComponent', () => {
 			it('should bind value', async () => {
 				const fixture = createTestingModule(
 					NgSelectTestComponent,
-					`<ng-select [(ngModel)]="selectedCityId">
+					`<ng-select [(value)]="selectedCityId">
 						<ng-option [value]="1">A</ng-option>
 						<ng-option [value]="2">B</ng-option>
 					</ng-select>`,
@@ -1217,7 +1216,7 @@ describe('NgSelectComponent', () => {
 			it('should not fail while resolving selected item from object', async () => {
 				const fixture = createTestingModule(
 					NgSelectTestComponent,
-					`<ng-select [(ngModel)]="selectedCity">
+					`<ng-select [(value)]="selectedCity">
                         <ng-option [value]="cities[0]">New York</ng-option>
                         <ng-option [value]="cities[1]">London</ng-option>
                 	</ng-select>`,
@@ -1236,14 +1235,14 @@ describe('NgSelectComponent', () => {
 			});
 		});
 
-		it('should not set internal model when single select ngModel is not valid', async () => {
+		it('should not set internal model when single select value is not valid', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
                         [multiple]="false"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -1256,14 +1255,14 @@ describe('NgSelectComponent', () => {
 			}
 		});
 
-		it('should not set internal model when multiselect ngModel is not valid', async () => {
+		it('should not set internal model when multiselect value is not valid', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         bindLabel="name"
                         [clearable]="true"
                         [multiple]="true"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -1285,7 +1284,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             bindValue="id"
                             placeholder="select value"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                         </ng-select>`,
 					);
 
@@ -1308,7 +1307,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             bindValue="id"
                             placeholder="select value"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                         </ng-select>`,
 					);
 
@@ -1338,7 +1337,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             bindValue="id"
                             placeholder="select value"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                         </ng-select>`,
 					);
 
@@ -1362,7 +1361,7 @@ describe('NgSelectComponent', () => {
 						`<ng-select [items]="cities"
                             bindLabel="name"
                             placeholder="select value"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                         </ng-select>`,
 					);
 
@@ -1383,7 +1382,7 @@ describe('NgSelectComponent', () => {
 						`<ng-select [items]="cities"
                             bindLabel="name"
                             placeholder="select value"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                         </ng-select>`,
 					);
 
@@ -1405,7 +1404,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             placeholder="select value"
                             [compareWith]="compareWith"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                         </ng-select>`,
 					);
 
@@ -1426,7 +1425,7 @@ describe('NgSelectComponent', () => {
                             bindValue="id"
                             placeholder="select value"
                             [compareWith]="compareWith"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                         </ng-select>`,
 					);
 
@@ -1439,14 +1438,14 @@ describe('NgSelectComponent', () => {
 					expect(cmp.select().selectedItems[0].value).toEqual(cmp.cities[1]);
 				});
 
-				it('should call compareWith with model value when bindValue items are set after ngModel', async () => {
+				it('should call compareWith with model value when bindValue items are set after value', async () => {
 					const fixture = createTestingModule(
 						NgSelectTestComponent,
 						`<ng-select [items]="cities"
                             bindLabel="name"
                             bindValue="id"
                             [compareWith]="compareWith"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                         </ng-select>`,
 					);
 
@@ -1485,7 +1484,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="description"
                             bindValue="item"
                             [compareWith]="compareWith"
-                            [(ngModel)]="nestedSelectedItem">
+                            [(value)]="nestedSelectedItem">
                         </ng-select>`,
 					);
 
@@ -1538,7 +1537,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             bindValue="id"
                             placeholder="select value"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                         </ng-select>`,
 					);
 
@@ -1571,7 +1570,7 @@ describe('NgSelectComponent', () => {
                             bindValue="id"
                             multiple="true"
                             placeholder="select value"
-                            [(ngModel)]="selectedCityIds">
+                            [(value)]="selectedCityIds">
                         </ng-select>`,
 					);
 
@@ -1588,7 +1587,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             multiple="true"
                             placeholder="select value"
-                            [(ngModel)]="selectedCities">
+                            [(value)]="selectedCities">
                         </ng-select>`,
 					);
 
@@ -1609,7 +1608,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1688,7 +1687,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             bindLabel="name"
                             [virtualScroll]="true"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1721,7 +1720,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             [virtualScroll]="true"
                             appendTo="body"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1740,7 +1739,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             [virtualScroll]="true"
                             [appendTo]="body"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1769,7 +1768,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 			const cmp = fixture.componentInstance;
@@ -1793,7 +1792,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 			const cmp = fixture.componentInstance;
@@ -1814,7 +1813,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1830,7 +1829,7 @@ describe('NgSelectComponent', () => {
 				EncapsulatedTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="city"></ng-select>`,
+                            [(value)]="city"></ng-select>`,
 			);
 
 			expect((<NgOption[]>fixture.componentInstance.select().selectedItems).length).toBe(0);
@@ -1866,7 +1865,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             [isOpen]="undefined"
                             bindLabel="name"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1885,7 +1884,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             [isOpen]="true"
                             bindLabel="name"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1902,7 +1901,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             bindLabel="name"
                             [closeOnSelect]="false"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -1918,7 +1917,7 @@ describe('NgSelectComponent', () => {
 				`
                 <ng-select [items]="cities"
                         appendTo="body"
-                        [(ngModel)]="city">
+                        [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -2077,7 +2076,7 @@ describe('NgSelectComponent', () => {
 				it('should update dropdown Y and X position when select element resizes', async () => {
 					const fixture = createTestingModule(
 						NgSelectTestComponent,
-						`<ng-select [items]="cities" bindLabel="name" [multiple]="true" [popover]="true" [closeOnSelect]="false" [(ngModel)]="selectedCities"></ng-select>`,
+						`<ng-select [items]="cities" bindLabel="name" [multiple]="true" [popover]="true" [closeOnSelect]="false" [(value)]="selectedCities"></ng-select>`,
 					);
 					await tickAndDetectChanges(fixture);
 
@@ -2100,7 +2099,7 @@ describe('NgSelectComponent', () => {
 
 					const fixture = createTestingModule(
 						NgSelectTestComponent,
-						`<ng-select [items]="cities" bindLabel="name" [multiple]="true" [popover]="false" [closeOnSelect]="false" [(ngModel)]="selectedCities"></ng-select>`,
+						`<ng-select [items]="cities" bindLabel="name" [multiple]="true" [popover]="false" [closeOnSelect]="false" [(value)]="selectedCities"></ng-select>`,
 					);
 					await tickAndDetectChanges(fixture);
 
@@ -2114,7 +2113,7 @@ describe('NgSelectComponent', () => {
 				it('should disconnect ResizeObserver when component is destroyed', async () => {
 					const fixture = createTestingModule(
 						NgSelectTestComponent,
-						`<ng-select [items]="cities" bindLabel="name" [multiple]="true" [popover]="true" [closeOnSelect]="false" [(ngModel)]="selectedCities"></ng-select>`,
+						`<ng-select [items]="cities" bindLabel="name" [multiple]="true" [popover]="true" [closeOnSelect]="false" [(value)]="selectedCities"></ng-select>`,
 					);
 					await tickAndDetectChanges(fixture);
 
@@ -2148,7 +2147,7 @@ describe('NgSelectComponent', () => {
 					[clearable]="clearable"
 					[markFirst]="markFirst"
 					[searchable]="searchable"
-					[(ngModel)]="selectedCity">
+					[(value)]="selectedCity">
 				</ng-select>`,
 			);
 			select = fixture.componentInstance.select();
@@ -2483,7 +2482,7 @@ describe('NgSelectComponent', () => {
 					[selectOnTab]="selectOnTab"
 					[multiple]="multiple"
 					[tabFocusOnClearButton]="tabFocusOnClearButton"
-					[(ngModel)]="selectedCity" />
+					[(value)]="selectedCity" />
 				`,
 			);
 			const select = fixture.componentInstance.select();
@@ -2563,7 +2562,7 @@ describe('NgSelectComponent', () => {
                         [selectOnTab]="selectOnTab"
                         [multiple]="multiple"
 												[tabFocusOnClearButton]="tabFocusOnClearButton"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -2590,7 +2589,7 @@ describe('NgSelectComponent', () => {
                         [selectOnTab]="selectOnTab"
                         [multiple]="multiple"
 												[tabFocusOnClearButton]="tabFocusOnClearButton"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -2617,7 +2616,7 @@ describe('NgSelectComponent', () => {
                         [selectOnTab]="selectOnTab"
                         [multiple]="multiple"
 						[tabFocusOnClearButton]="tabFocusOnClearButton"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -2644,7 +2643,7 @@ describe('NgSelectComponent', () => {
                         [selectOnTab]="selectOnTab"
                         [multiple]="multiple"
 												[tabFocusOnClearButton]="tabFocusOnClearButton"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -2670,7 +2669,7 @@ describe('NgSelectComponent', () => {
                         [loading]="citiesLoading"
                         [selectOnTab]="selectOnTab"
                         [multiple]="multiple"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -2695,7 +2694,7 @@ describe('NgSelectComponent', () => {
                         [loading]="citiesLoading"
                         [selectOnTab]="selectOnTab"
                         [multiple]="multiple"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -2723,7 +2722,7 @@ describe('NgSelectComponent', () => {
                     multiple="true"
                     [closeOnSelect]="false"
                     appendTo="body"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 			select = fixture.componentInstance.select();
@@ -2763,8 +2762,8 @@ describe('NgSelectComponent', () => {
 			}).overrideComponent(NgSelectTestComponent, {
 				set: {
 					template: `<div id="outside2">Outside</div>
-					<ng-select id="select2" [items]="cities" bindLabel="name" [(ngModel)]="selectedCity"></ng-select>`,
-					imports: [NgSelectComponent, NgOptionComponent, FormsModule],
+					<ng-select id="select2" [items]="cities" bindLabel="name" [(value)]="selectedCity"></ng-select>`,
+					imports: [NgSelectComponent, NgOptionComponent],
 				},
 			});
 			TestBed.compileComponents();
@@ -2795,7 +2794,7 @@ describe('NgSelectComponent', () => {
 					`<div id="outside">Outside</div><br />
 					<ng-select [items]="cities"
 						bindLabel="name"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2817,7 +2816,7 @@ describe('NgSelectComponent', () => {
 					<ng-select [items]="cities"
 						bindLabel="name"
 						appendTo="body"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2839,7 +2838,7 @@ describe('NgSelectComponent', () => {
 					NgSelectTestComponent,
 					`<ng-select [items]="cities"
 						bindLabel="name"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2860,7 +2859,7 @@ describe('NgSelectComponent', () => {
 					`<ng-select [items]="cities"
 						bindLabel="name"
 						appendTo="body"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2882,7 +2881,7 @@ describe('NgSelectComponent', () => {
 					NgSelectTestComponent,
 					`<ng-select [items]="cities"
 						bindLabel="name"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2903,7 +2902,7 @@ describe('NgSelectComponent', () => {
 					`<ng-select [items]="cities"
 						bindLabel="name"
 						appendTo="body"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2925,7 +2924,7 @@ describe('NgSelectComponent', () => {
 					NgSelectTestComponent,
 					`<ng-select [items]="cities"
 						bindLabel="name"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2947,7 +2946,7 @@ describe('NgSelectComponent', () => {
 					`<ng-select [items]="cities"
 						bindLabel="name"
 						appendTo="body"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2970,7 +2969,7 @@ describe('NgSelectComponent', () => {
 					NgSelectTestComponent,
 					`<ng-select [items]="cities"
 						bindLabel="name"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -2998,7 +2997,7 @@ describe('NgSelectComponent', () => {
 					`<ng-select [items]="cities"
 						bindLabel="name"
 						appendTo="body"
-						[(ngModel)]="selectedCity">
+						[(value)]="selectedCity">
 					</ng-select>`,
 				);
 
@@ -3097,7 +3096,7 @@ describe('NgSelectComponent', () => {
 		it('should display custom header template', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [items]="cities" [(ngModel)]="selectedCity">
+				`<ng-select [items]="cities" [(value)]="selectedCity">
                     <ng-template ng-label-tmp let-item="item">
                         <div class="custom-header">{{item.name}}</div>
                     </ng-template>
@@ -3118,7 +3117,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="city">
+                            [(value)]="city">
                 </ng-select>`,
 			);
 
@@ -3136,7 +3135,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3155,7 +3154,7 @@ describe('NgSelectComponent', () => {
 		it('should display custom dropdown option template', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [items]="cities" [(ngModel)]="selectedCity">
+				`<ng-select [items]="cities" [(value)]="selectedCity">
                     <ng-template ng-option-tmp let-item="item">
                         <div class="custom-option">{{item.name}}</div>
                     </ng-template>
@@ -3173,7 +3172,7 @@ describe('NgSelectComponent', () => {
 		it('should display custom multiple label template', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [items]="cities" [multiple]="true" [(ngModel)]="selectedCities">
+				`<ng-select [items]="cities" [multiple]="true" [(value)]="selectedCities">
                     <ng-template ng-multi-label-tmp let-items="items">
                         <div class="custom-multi-label">selected {{items.length}}</div>
                     </ng-template>
@@ -3191,7 +3190,7 @@ describe('NgSelectComponent', () => {
 		it('should display custom footer and header template', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [items]="cities" [(ngModel)]="selectedCity">
+				`<ng-select [items]="cities" [(value)]="selectedCity">
                     <ng-template ng-header-tmp>
                         <span class="header-label">header</span>
                     </ng-template>
@@ -3215,7 +3214,7 @@ describe('NgSelectComponent', () => {
 		it('should display custom tag template', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [items]="cities" [(ngModel)]="selectedCity" [addTag]="true">
+				`<ng-select [items]="cities" [(value)]="selectedCity" [addTag]="true">
                     <ng-template ng-tag-tmp let-search="searchTerm">
                         <span class="tag-template">{{searchTerm}}</span>
                     </ng-template>
@@ -3237,7 +3236,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             [loading]="citiesLoading"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
 
                     <ng-template ng-notfound-tmp let-searchTerm="searchTerm">
                         <div class="custom-notfound">
@@ -3274,7 +3273,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             [typeahead]="filter"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                     <ng-template ng-typetosearch-tmp>
                         <div class="custom-typeforsearch">
                             Start typing...
@@ -3300,7 +3299,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             [loading]="true"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
 
                     <ng-template ng-loadingspinner-tmp>
                         <div class="custom-loadingspinner">
@@ -3319,7 +3318,7 @@ describe('NgSelectComponent', () => {
 		it('should update ng-option state', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity">
+				`<ng-select [(value)]="selectedCity">
                     <ng-option [disabled]="disabled" [value]="true">Yes</ng-option>
                     <ng-option [value]="false">No</ng-option>
                 </ng-select>`,
@@ -3338,7 +3337,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             [loading]="true"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
 
                     <ng-template ng-clearbutton-tmp>
                         <div class="custom-clearbutton">
@@ -3362,7 +3361,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             bindLabel="name"
                             bindValue="name"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
 
                     <ng-template ng-clearbutton-tmp>
                         <div class="custom-clearbutton">
@@ -3394,7 +3393,7 @@ describe('NgSelectComponent', () => {
 		it('should display ng-placeholder template', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity">
+				`<ng-select [(value)]="selectedCity">
 					<ng-template ng-placeholder-tmp>
 						<div class="placeholder-template">Select your city</div>
 					</ng-template>
@@ -3410,7 +3409,7 @@ describe('NgSelectComponent', () => {
 		it('should display ng-placeholder if an item is selected', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity" 
+				`<ng-select [(value)]="selectedCity" 
 														 [items]="cities" bindLabel="name" 
 														 fixedPlaceholder="true"
 														 placeholder="testPlaceholder">			
@@ -3427,7 +3426,7 @@ describe('NgSelectComponent', () => {
 		it('should not display ng-placeholder if an item is selected', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity"
+				`<ng-select [(value)]="selectedCity"
 														 [fixedPlaceholder]="false"
 														 [items]="cities" bindLabel="name"
 														 placeholder="testPlaceholder">
@@ -3444,7 +3443,7 @@ describe('NgSelectComponent', () => {
 		it('should update ng-option label', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity">
+				`<ng-select [(value)]="selectedCity">
                     <ng-option [disabled]="disabled" [value]="true">{{label}}</ng-option>
                     <ng-option [value]="false">No</ng-option>
                 </ng-select>`,
@@ -3460,7 +3459,7 @@ describe('NgSelectComponent', () => {
 		it('should update ng-option label after async change (delayed)', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity">
+				`<ng-select [(value)]="selectedCity">
 					<ng-option [value]="true">{{label}}</ng-option>
 					<ng-option [value]="false">No</ng-option>
 				</ng-select>`,
@@ -3485,7 +3484,7 @@ describe('NgSelectComponent', () => {
 		it('should update ng-option value after async change (delayed)', async () => {
 			const fixture = createTestingModule(
 				NgSelectTestComponent,
-				`<ng-select [(ngModel)]="selectedCity">
+				`<ng-select [(value)]="selectedCity">
 					<ng-option [value]="cityValue">{{label}}</ng-option>
 					<ng-option [value]="false">No</ng-option>
 				</ng-select>`,
@@ -3522,7 +3521,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     placeholder="select value"
-                    [(ngModel)]="selectedCities"
+                    [(value)]="selectedCities"
 					[hideSelected]="hideSelected"
                     [closeOnSelect]="closeOnSelect"
 					[maxSelectedItems]="maxSelectedItems"
@@ -3854,7 +3853,7 @@ describe('NgSelectComponent', () => {
                     bindLabel="name"
                     [addTag]="true"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3871,7 +3870,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="citiesNames"
                     [addTag]="true"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3887,7 +3886,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="[]"
                     [addTag]="true"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3905,7 +3904,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="[]"
                     [isOpen]="false"
                     [addTag]="true"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3923,7 +3922,7 @@ describe('NgSelectComponent', () => {
                     [addTag]="true"
                     [selectOnTab]="true"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3941,7 +3940,7 @@ describe('NgSelectComponent', () => {
                     bindLabel="name"
                     [addTag]="true"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3960,7 +3959,7 @@ describe('NgSelectComponent', () => {
                     bindLabel="name"
                     [addTag]="tagFunc"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -3984,7 +3983,7 @@ describe('NgSelectComponent', () => {
                     bindLabel="name"
                     [addTag]="tagFuncPromise"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4015,7 +4014,7 @@ describe('NgSelectComponent', () => {
 						[minTermLength]="minTermLength"
 						[hideSelected]="hideSelected"
 						placeholder="select value"
-						[(ngModel)]="selectedCities">
+						[(value)]="selectedCities">
 					</ng-select>`,
 				);
 				select = fixture.componentInstance.select();
@@ -4077,7 +4076,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     placeholder="select value"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 		});
@@ -4133,7 +4132,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                     bindLabel="name"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4155,7 +4154,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     [searchFn]="searchFn"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4184,7 +4183,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     [searchable]="false"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4206,7 +4205,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     [searchable]="false"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4226,7 +4225,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                     bindLabel="name"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4248,7 +4247,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     [isOpen]="false"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4264,7 +4263,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                     bindLabel="name"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4287,7 +4286,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                     bindLabel="name"
                     [markFirst]="false"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4302,7 +4301,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                     bindLabel="name"
-                    [(ngModel)]="selectedCity"
+                    [(value)]="selectedCity"
                     [multiple]="true">
                 </ng-select>`,
 			);
@@ -4320,7 +4319,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                     bindLabel="name"
-                    [(ngModel)]="selectedCity"
+                    [(value)]="selectedCity"
                     [multiple]="true">
                 </ng-select>`,
 			);
@@ -4340,7 +4339,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="accounts"
                         groupBy="country"
                         bindLabel="name"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 			);
 
@@ -4361,7 +4360,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                     bindLabel="name"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 			);
 			await tickAndDetectChanges(fixture);
@@ -4412,7 +4411,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
 						[markFirst]="markFirst"
                         [hideSelected]="hideSelected"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 			});
@@ -4522,7 +4521,7 @@ describe('NgSelectComponent', () => {
                         [typeahead]="filter"
                         bindLabel="name"
                         [hideSelected]="hideSelected"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 
@@ -4548,7 +4547,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         [hideSelected]="hideSelected"
                         [closeOnSelect]="false"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 
@@ -4574,7 +4573,7 @@ describe('NgSelectComponent', () => {
                         [hideSelected]="hideSelected"
                         [clearSearchOnAdd]="false"
                         [closeOnSelect]="false"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 
@@ -4602,7 +4601,7 @@ describe('NgSelectComponent', () => {
                         [hideSelected]="hideSelected"
                         [clearSearchOnAdd]="true"
                         [closeOnSelect]="false"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 
@@ -4634,7 +4633,7 @@ describe('NgSelectComponent', () => {
                         bindLabel="name"
                         [hideSelected]="hideSelected"
                         [closeOnSelect]="false"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 					config,
 				);
@@ -4663,7 +4662,7 @@ describe('NgSelectComponent', () => {
                         [hideSelected]="hideSelected"
                         [closeOnSelect]="false"
                         [clearSearchOnAdd]="false"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 					config,
 				);
@@ -4691,7 +4690,7 @@ describe('NgSelectComponent', () => {
                         [editableSearchTerm]="true"
                         bindValue="id"
                         bindLabel="name"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 				expect(fixture.componentInstance.select().editableSearchTerm()).toBeTruthy();
@@ -4716,7 +4715,7 @@ describe('NgSelectComponent', () => {
                         [editableSearchTerm]="true"
                         bindValue="id"
                         bindLabel="name"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 				const select = fixture.componentInstance.select();
@@ -4745,20 +4744,20 @@ describe('NgSelectComponent', () => {
 				expect(allOptions.length).toEqual(fixture.componentInstance.cities.length);
 			});
 
-			it('should update search term when ngModel is updated programmatically', async () => {
+			it('should update search term when value is updated programmatically', async () => {
 				const fixture = createTestingModule(
 					NgSelectTestComponent,
 					`<ng-select [items]="cities"
                         [editableSearchTerm]="true"
                         bindValue="id"
                         bindLabel="name"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                     </ng-select>`,
 				);
 				const select = fixture.componentInstance.select();
 				const selectedCity = fixture.componentInstance.cities[0];
 
-				// Update ngModel programmatically (simulating writeValue)
+				// Update value programmatically through the value model.
 				fixture.componentInstance.selectedCity = selectedCity.id;
 				await tickAndDetectChanges(fixture);
 
@@ -4881,7 +4880,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             (open)="onOpen()"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4899,7 +4898,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             (search)="onSearch($event)"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4917,7 +4916,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             (close)="onClose()"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4938,7 +4937,7 @@ describe('NgSelectComponent', () => {
                             bindValue="id"
                             bindLabel="name"
                             (change)="onChange($event)"
-                            [(ngModel)]="selectedCityId">
+                            [(value)]="selectedCityId">
                 </ng-select>`,
 			);
 
@@ -4960,7 +4959,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                             (change)="onChange()"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4981,7 +4980,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             (add)="onAdd($event)"
                             [multiple]="true"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -4999,7 +4998,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             (add)="onAdd($event)"
                             [multiple]="false"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -5016,7 +5015,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             (remove)="onRemove($event)"
                             [multiple]="true"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -5036,7 +5035,7 @@ describe('NgSelectComponent', () => {
 				`<ng-select [items]="cities"
                             (clear)="onClear($event)"
                             [multiple]="true"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -5059,7 +5058,7 @@ describe('NgSelectComponent', () => {
                             autofocus
                             bindLabel="name"
                             [multiple]="true"
-                            [(ngModel)]="selectedCities">
+                            [(value)]="selectedCities">
                 </ng-select>`,
 			);
 			const select = fixture.componentInstance.select();
@@ -5082,7 +5081,7 @@ describe('NgSelectComponent', () => {
                             bindLabel="name"
                             [multiple]="true"
 							[preventToggleOnRightClick]="preventToggleOnRightClick"
-                            [(ngModel)]="selectedCities">
+                            [(value)]="selectedCities">
                     </ng-select>`,
 				);
 				select = fixture.componentInstance.select();
@@ -5120,7 +5119,7 @@ describe('NgSelectComponent', () => {
 					`<ng-select [items]="cities"
                             bindLabel="name"
                             [multiple]="true"
-                            [(ngModel)]="selectedCities">
+                            [(value)]="selectedCities">
                     </ng-select>`,
 				);
 				select = fixture.componentInstance.select();
@@ -5151,7 +5150,7 @@ describe('NgSelectComponent', () => {
                             [disabled]="disabled"
                             [clearKeepsDisabledOptions]="clearKeepsDisabledOptions"
                             [readonly]="readonly"
-                            [(ngModel)]="selectedCities">
+                            [(value)]="selectedCities">
                     </ng-select>`,
 				);
 
@@ -5245,7 +5244,7 @@ describe('NgSelectComponent', () => {
 					`<ng-select [items]="cities"
                             bindLabel="name"
                             [multiple]="true"
-                            [(ngModel)]="selectedCities">
+                            [(value)]="selectedCities">
                     </ng-select>`,
 				);
 				select = fixture.componentInstance.select();
@@ -5284,7 +5283,7 @@ describe('NgSelectComponent', () => {
 					NgSelectTestComponent,
 					`<ng-select [items]="cities"
                             bindLabel="name"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                     </ng-select>`,
 				);
 
@@ -5326,7 +5325,7 @@ describe('NgSelectComponent', () => {
 				NgSelectTestComponent,
 				`<ng-select [items]="cities"
                         appendTo="body"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -5344,7 +5343,7 @@ describe('NgSelectComponent', () => {
                 <div class="container"></div>
                 <ng-select [items]="cities"
                         appendTo=".container"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			);
 
@@ -5364,7 +5363,7 @@ describe('NgSelectComponent', () => {
                             appendTo=".container"
                             bindLabel="name"
                             style="width: 50%; margin-left: auto"
-                            [(ngModel)]="selectedCity">
+                            [(value)]="selectedCity">
                         </ng-select>
                     </div>
                 </div>`,
@@ -5384,7 +5383,7 @@ describe('NgSelectComponent', () => {
 				`
                 <div class="container"></div>
                 <ng-select [items]="cities"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -5405,7 +5404,7 @@ describe('NgSelectComponent', () => {
                 <div class="container"></div>
                 <ng-select [items]="cities"
                         appendTo=".container"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -5426,7 +5425,7 @@ describe('NgSelectComponent', () => {
                 <ng-select [items]="cities"
                         class="someClass"
                         appendTo=".container"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -5449,7 +5448,7 @@ describe('NgSelectComponent', () => {
                 <ng-select [items]="cities"
                         [ngClass]="{ someClass: visible }"
                         appendTo=".container"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 				config,
 			);
@@ -5478,7 +5477,7 @@ describe('NgSelectComponent', () => {
                 <ng-select [items]="cities"
                         class="someClass"
                         appendTo=".container"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			config,
 		);
@@ -5501,7 +5500,7 @@ describe('NgSelectComponent', () => {
                 <ng-select [items]="cities"
                         [ngClass]="{ someClass: visible }"
                         appendTo=".container"
-                        [(ngModel)]="selectedCity">
+                        [(value)]="selectedCity">
                 </ng-select>`,
 			config,
 		);
@@ -5527,7 +5526,7 @@ describe('Grouping', () => {
 			`<ng-select [items]="accounts"
                         groupBy="country"
                         bindLabel="name"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5560,7 +5559,7 @@ describe('Grouping', () => {
 			NgSelectGroupingTestComponent,
 			`<ng-select [items]="groupedAccounts"
                         groupBy="accounts"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5591,7 +5590,7 @@ describe('Grouping', () => {
 			NgSelectGroupingTestComponent,
 			`<ng-select [items]="accounts"
                         groupBy="country"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5633,7 +5632,7 @@ describe('Grouping', () => {
 			`<ng-select [items]="accounts"
                         bindLabel="name"
                         [groupBy]="groupByFn"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5655,7 +5654,7 @@ describe('Grouping', () => {
                         bindLabel="name"
                         [groupBy]="groupByFn"
                         [groupValue]="groupValueFn"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5676,7 +5675,7 @@ describe('Grouping', () => {
 			`<ng-select [items]="accounts"
                         groupBy="country"
                         bindValue="name"
-                        [(ngModel)]="selectedAccountName">
+                        [(value)]="selectedAccountName">
                 </ng-select>`,
 		);
 
@@ -5695,7 +5694,7 @@ describe('Grouping', () => {
 			`<ng-select [items]="accounts"
                         groupBy="country"
                         bindLabel="name"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5720,7 +5719,7 @@ describe('Grouping', () => {
                         bindLabel="name"
                         bindValue="email"
                         [selectableGroup]="true"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5741,7 +5740,7 @@ describe('Grouping', () => {
                         bindLabel="name"
                         bindValue="email"
                         [selectableGroup]="true"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5761,7 +5760,7 @@ describe('Grouping', () => {
                         groupBy="country"
                         bindLabel="name"
                         bindValue="email"
-                        [(ngModel)]="selectedAccount">
+                        [(value)]="selectedAccount">
                 </ng-select>`,
 		);
 
@@ -5779,7 +5778,7 @@ describe('Grouping', () => {
                         groupBy="country"
                         bindLabel="name"
                         bindValue="email"
-                        [(ngModel)]="selectedAccount"
+                        [(value)]="selectedAccount"
                         [class]="'test'">
                 </ng-select>`,
 		);
@@ -5799,7 +5798,7 @@ describe('Grouping', () => {
                         groupBy="group"
                         bindLabel="name"
                         bindValue="email"
-                        [(ngModel)]="selectedAccount"
+                        [(value)]="selectedAccount"
                         [class]="'test'">
                 </ng-select>`,
 		);
@@ -5837,7 +5836,7 @@ describe('Input method composition', () => {
                     [addTag]="true"
                     placeholder="select value"
                     [searchWhileComposing]="searchWhileComposing"
-                    [(ngModel)]="selectedCity">
+                    [(value)]="selectedCity">
                 </ng-select>`,
 		);
 		select = fixture.componentInstance.select();
@@ -5947,7 +5946,6 @@ function createTestingModule<T>(cmp: Type<T>, template: string, customNgSelectCo
 			template,
 			imports: [
 				NgClass,
-				FormsModule,
 				NgSelectComponent,
 				NgOptionComponent,
 				NgOptgroupTemplateDirective,
@@ -5993,7 +5991,6 @@ function createEvent(target = {}) {
 @Component({
 	template: ``,
 	standalone: true,
-	imports: [FormsModule],
 })
 class NgSelectTestComponent {
 	readonly select = viewChild(NgSelectComponent);
@@ -6118,7 +6115,7 @@ class NgSelectTestComponent {
 @Component({
 	template: ``,
 	encapsulation: ViewEncapsulation.ShadowDom,
-	imports: [NgSelectModule, FormsModule],
+	imports: [NgSelectModule],
 })
 class EncapsulatedTestComponent extends NgSelectTestComponent {
 	readonly select = viewChild(NgSelectComponent);
@@ -6127,7 +6124,6 @@ class EncapsulatedTestComponent extends NgSelectTestComponent {
 @Component({
 	template: ``,
 	standalone: true,
-	imports: [FormsModule],
 })
 class NgSelectGroupingTestComponent {
 	readonly select = viewChild(NgSelectComponent);

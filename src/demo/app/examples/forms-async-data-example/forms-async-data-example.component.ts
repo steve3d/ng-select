@@ -1,6 +1,6 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgOptionTemplateDirective, NgSelectComponent, NgSelectComponent as NgSelectComponent_1 } from '@ng-select/ng-select';
+import { Component, OnInit, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
+import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 import { delay } from 'rxjs/operators';
 import { DataService } from '../data.service';
 import { NgOptionHighlightDirective } from '@ng-select/ng-option-highlight';
@@ -10,21 +10,18 @@ import { NgOptionHighlightDirective } from '@ng-select/ng-option-highlight';
 	templateUrl: './forms-async-data-example.component.html',
 	styleUrls: ['./forms-async-data-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [FormsModule, ReactiveFormsModule, NgSelectComponent_1, NgOptionTemplateDirective, NgOptionHighlightDirective],
+	imports: [FormRoot, FormField, NgSelectComponent, NgOptionTemplateDirective, NgOptionHighlightDirective],
 })
 export class FormsAsyncDataExampleComponent implements OnInit {
-	private fb = inject(FormBuilder);
 	private dataService = inject(DataService);
 
-	heroForm: FormGroup;
+	readonly hero = signal({ album: null as number | null });
+	readonly heroForm = form(this.hero);
 	albums = [];
 	allAlbums = [];
 
 	ngOnInit() {
 		this.loadAlbums();
-		this.heroForm = this.fb.group({
-			album: '',
-		});
 	}
 
 	openSelect(select: NgSelectComponent) {
@@ -40,7 +37,7 @@ export class FormsAsyncDataExampleComponent implements OnInit {
 	}
 
 	selectFirstAlbum() {
-		this.heroForm.get('album').patchValue(this.albums[0].id);
+		this.hero.update((hero) => ({ ...hero, album: this.albums[0].id }));
 	}
 
 	private loadAlbums() {

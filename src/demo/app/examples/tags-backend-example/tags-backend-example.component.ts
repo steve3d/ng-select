@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgSelectComponent, NgTagTemplateDirective } from '@ng-select/ng-select';
 
 @Component({
@@ -7,7 +6,7 @@ import { NgSelectComponent, NgTagTemplateDirective } from '@ng-select/ng-select'
 	templateUrl: './tags-backend-example.component.html',
 	styleUrls: ['./tags-backend-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgTagTemplateDirective],
+	imports: [NgSelectComponent, NgTagTemplateDirective],
 })
 export class TagsBackendExampleComponent implements OnInit {
 	selectedCompanies;

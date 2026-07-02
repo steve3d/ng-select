@@ -1,6 +1,6 @@
 <p>Custom dropdown panel option template using <b>ng-option-tmp</b></p>
 
-<ng-select [items]="cities" [(ngModel)]="selectedCity" bindLabel="name" bindValue="name">
+<ng-select [items]="cities" [(value)]="selectedCity" bindLabel="name" bindValue="name">
 	<ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
 		@if (item.name === 'Kaunas') {
 			<div>{{ item.name }}</div>

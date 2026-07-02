@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AppendToExampleComponent } from './append-to-example/append-to-example.component';
@@ -102,7 +101,7 @@ const examples = [
 ];
 
 @NgModule({
-	imports: [NgSelectModule, FormsModule, CommonModule, ReactiveFormsModule, ...examples],
-	exports: [NgSelectModule, FormsModule, CommonModule, ReactiveFormsModule],
+	imports: [NgSelectModule, CommonModule, ...examples],
+	exports: [NgSelectModule, CommonModule],
 })
 export class ExamplesModule {}

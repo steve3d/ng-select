@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DataService } from '../data.service';
-import { FormsModule } from '@angular/forms';
 import { NgFooterTemplateDirective, NgHeaderTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
@@ -8,7 +7,7 @@ import { NgFooterTemplateDirective, NgHeaderTemplateDirective, NgSelectComponent
 	templateUrl: './template-header-footer-example.component.html',
 	styleUrls: ['./template-header-footer-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgHeaderTemplateDirective, NgFooterTemplateDirective],
+	imports: [NgSelectComponent, NgHeaderTemplateDirective, NgFooterTemplateDirective],
 })
 export class TemplateHeaderFooterExampleComponent implements OnInit {
 	private dataService = inject(DataService);

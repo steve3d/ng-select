@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DataService, Person } from '../data.service';
 import { Observable } from 'rxjs';
-import { FormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
@@ -10,7 +9,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './search-editable-example.component.html',
 	styleUrls: ['./search-editable-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, AsyncPipe],
+	imports: [NgSelectComponent, AsyncPipe],
 })
 export class SearchEditableExampleComponent implements OnInit {
 	private dataService = inject(DataService);

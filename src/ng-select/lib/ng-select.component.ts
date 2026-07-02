@@ -1,5 +1,6 @@
 import {
 	AfterViewInit,
+	afterRenderEffect,
 	booleanAttribute,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
@@ -12,7 +13,6 @@ import {
 	ElementRef,
 	forwardRef,
 	HostAttributeToken,
-	HostListener,
 	inject,
 	InjectionToken,
 	Injector,
@@ -29,7 +29,7 @@ import {
 	viewChild,
 	ViewEncapsulation,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import type { FormValueControl } from '@angular/forms/signals';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, tap } from 'rxjs/operators';
 
@@ -77,14 +77,7 @@ function optionalBooleanAttribute(value: unknown): boolean | undefined {
 	exportAs: 'ngSelect',
 	templateUrl: './ng-select.component.html',
 	styleUrls: ['./ng-select.component.scss'],
-	providers: [
-		{
-			provide: NG_VALUE_ACCESSOR,
-			useExisting: forwardRef(() => NgSelectComponent),
-			multi: true,
-		},
-		NgDropdownPanelService,
-	],
+	providers: [NgDropdownPanelService],
 	encapsulation: ViewEncapsulation.None,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [NgClass, NgTemplateOutlet, NgItemLabelDirective, NgDropdownPanelComponent],
@@ -98,14 +91,13 @@ function optionalBooleanAttribute(value: unknown): boolean | undefined {
 		'[class.ng-select-clearable]': 'clearable()',
 		'[class.ng-select-opened]': 'isOpen()',
 		'[class.ng-select-filtered]': 'filtered',
-		'[class.ng-select-disabled]': 'disabled()',
+		'[class.ng-select-disabled]': 'isDisabled()',
+		'(keydown)': 'handleKeyDown($event)',
 	},
 })
-export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, ControlValueAccessor {
+export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, FormValueControl<any | any[]> {
 	readonly classes = inject(new HostAttributeToken('class'), { optional: true });
 	readonly config = inject(NgSelectConfig);
-	// signals
-	public readonly _disabled = signal<boolean>(false);
 	// inputs
 	readonly ariaLabelDropdown = input<string>();
 	readonly ariaLabel = input<string>();
@@ -144,6 +136,7 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	readonly searchFn = input<((term: string, item: any) => boolean) | null>(null);
 	readonly trackByFn = input<((item: any) => any) | null>(null);
 	readonly clearOnBackspace = input(true, { transform: booleanAttribute });
+	readonly disabled = input(false, { transform: booleanAttribute });
 	readonly labelForId = input<string | null>(null);
 	readonly inputAttrs = input<Record<string, string>>({});
 	readonly tabIndex = input<number>(undefined, { transform: numberAttribute });
@@ -175,7 +168,8 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	readonly bindValue = model<string>(undefined);
 	readonly appearance = model<string>(undefined);
 	readonly isOpen = model<boolean>(false);
-	readonly items = model<readonly any[]>([]);
+	readonly items = input<readonly any[] | null | undefined>([]);
+	readonly value = model<any | any[]>(null);
 	// output events
 	readonly blurEvent = output<any>({ alias: 'blur' });
 	readonly focusEvent = output<any>({ alias: 'focus' });
@@ -194,8 +188,9 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 		end: number;
 	}>({ alias: 'scroll' });
 	readonly scrollToEnd = output<any>({ alias: 'scrollToEnd' });
+	readonly touch = output<void>();
 	// computed
-	readonly disabled = computed(() => this.readonly() || this._disabled());
+	readonly isDisabled = computed(() => this.disabled() || this.readonly());
 	readonly clearSearchOnAddValue = computed(() => {
 		if (isDefined(this.clearSearchOnAdd())) {
 			return this.clearSearchOnAdd();
@@ -255,6 +250,8 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	private _manualOpen: boolean;
 	private _pressedKeys: string[] = [];
 	private _primitive: any;
+	private _skipNextValueSync = false;
+	private _valueWrittenFromSelection = false;
 	private readonly _searchTerm = signal<string>(null);
 	private readonly _validTerm = computed(() => {
 		const term = this._searchTerm()?.trim();
@@ -341,7 +338,7 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 
 		if (itemsChange?.firstChange) {
 			this._itemsAreUsed = true;
-			this._setItems(itemsChange.currentValue || []);
+			this._setItems(itemsChange.currentValue ?? []);
 		}
 
 		if (isOpenChange) {
@@ -349,7 +346,7 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 		}
 
 		if (groupByChange?.firstChange && !itemsChange) {
-			this._setItems([...this.items()]);
+			this._setItems([...(this.items() ?? [])]);
 		}
 
 		this._setTabFocusOnClear();
@@ -366,7 +363,6 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 		}
 	}
 
-	@HostListener('keydown', ['$event'])
 	handleKeyDown($event: KeyboardEvent) {
 		const keyName = $event.key;
 		if (Object.values(KeyCode).includes(keyName as KeyCode)) {
@@ -426,7 +422,7 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	}
 
 	handleMousedown($event: MouseEvent) {
-		if (this.disabled()) {
+		if (this.isDisabled()) {
 			return;
 		}
 
@@ -491,28 +487,6 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 		this._updateNgModel();
 	}
 
-	writeValue(value: any | any[]): void {
-		this.itemsList.clearSelected(false);
-		this._handleWriteValue(value);
-		if (this._editableSearchTermActive()) {
-			this._setSearchTermFromItems();
-		}
-		this._cd.markForCheck();
-	}
-
-	registerOnChange(fn: any): void {
-		this._onChange = fn;
-	}
-
-	registerOnTouched(fn: any): void {
-		this._onTouched = fn;
-	}
-
-	setDisabledState(state: boolean): void {
-		this._disabled.set(state);
-		this._cd.markForCheck();
-	}
-
 	toggle() {
 		if (!this.isOpen()) {
 			this.open();
@@ -522,7 +496,7 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	}
 
 	open() {
-		if (this.disabled() || this.isOpen() || this._manualOpen) {
+		if (this.isDisabled() || this.isOpen() || this._manualOpen) {
 			return;
 		}
 
@@ -550,13 +524,13 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 			this.itemsList.resetFilteredItems();
 		}
 		this.itemsList.unmarkItem();
-		this._onTouched();
+		this.touch.emit();
 		this.closeEvent.emit();
 		this.detectChanges();
 	}
 
 	toggleItem(item: NgOption) {
-		if (!item || item.disabled || this.disabled()) {
+		if (!item || item.disabled || this.isDisabled()) {
 			return;
 		}
 
@@ -628,7 +602,7 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	}
 
 	showClear() {
-		return this.clearable() && (this.hasValue || this.searchTerm) && !this.disabled();
+		return this.clearable() && (this.hasValue || this.searchTerm) && !this.isDisabled();
 	}
 
 	focusOnClear() {
@@ -710,8 +684,8 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	onInputBlur($event: FocusEvent) {
 		this.element.classList.remove('ng-select-focused');
 		this.blurEvent.emit($event);
-		if (!this.isOpen() && !this.disabled()) {
-			this._onTouched();
+		if (!this.isOpen() && !this.isDisabled()) {
+			this.touch.emit();
 		}
 		if (this._editableSearchTermActive()) {
 			this._setSearchTermFromItems();
@@ -732,10 +706,6 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 		}
 	}
 
-	private _onChange = (_: any) => {};
-
-	private _onTouched = () => {};
-
 	private _handleSignalChanges() {
 		let itemsInitialized = false;
 		effect(
@@ -749,7 +719,8 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 
 				untracked(() => {
 					this._itemsAreUsed = true;
-					this._setItems(items || []);
+					this._setItems(items ?? []);
+					this._syncSelectionAfterItemsChange();
 				});
 			},
 			{ injector: this._injector },
@@ -765,7 +736,10 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 					return;
 				}
 
-				untracked(() => this.itemsList.clearSelected(false));
+				untracked(() => {
+					this.itemsList.clearSelected(false);
+					this._syncSelectionFromModel(this.value());
+				});
 			},
 			{ injector: this._injector },
 		);
@@ -780,7 +754,32 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 					return;
 				}
 
-				untracked(() => this._setItems([...this.items()]));
+				untracked(() => {
+					this._setItems([...(this.items() ?? [])]);
+					this._syncSelectionAfterItemsChange();
+				});
+			},
+			{ injector: this._injector },
+		);
+
+		effect(
+			() => {
+				const value = this.value();
+				this.bindLabel();
+				this.bindValue();
+				this.compareWith();
+				this.multiple();
+
+				if (this._skipNextValueSync) {
+					untracked(() => {
+						this._skipNextValueSync = false;
+					});
+				} else {
+					untracked(() => {
+						this._valueWrittenFromSelection = false;
+						this._syncSelectionFromModel(value);
+					});
+				}
 			},
 			{ injector: this._injector },
 		);
@@ -805,6 +804,21 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 		this._searchTerm.set(selected?.label ?? null);
 	}
 
+	private _syncSelectionFromModel(value: any | any[]): void {
+		this.itemsList.clearSelected(false);
+		this._handleWriteValue(value);
+		if (this._editableSearchTermActive()) {
+			this._setSearchTermFromItems();
+		}
+		this._cd.markForCheck();
+	}
+
+	private _syncSelectionAfterItemsChange(): void {
+		if (!this._valueWrittenFromSelection) {
+			this._syncSelectionFromModel(this.value());
+		}
+	}
+
 	private _setItems(items: readonly any[]) {
 		const firstItem = items[0];
 		this.bindLabel.set(this.bindLabel() || this._defaultLabel);
@@ -822,7 +836,7 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 	}
 
 	private _setItemsFromNgOptions() {
-		effect(
+		afterRenderEffect(
 			() => {
 				const options = this.ngOptions();
 				// Wait until all ng-option inputs are initialized (avoids _groupBy crash when values load async)
@@ -832,14 +846,21 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 
 				this.bindLabel.set(this._defaultLabel);
 				const items =
-					options.map((option) => ({
-						$ngOptionValue: option.value(),
-						$ngOptionLabel: option.elementRef.nativeElement.innerHTML,
-						$ngOptionClasses: option.classes(),
-						disabled: option.disabled(),
-					})) ?? [];
-				this.items.set(items);
-				this.itemsList.setItems(items);
+					options.map((option) => {
+						option.label();
+						option.classes();
+						const element = option.elementRef.nativeElement;
+
+						return {
+							$ngOptionValue: option.value(),
+							$ngOptionLabel: element.innerHTML,
+							$ngOptionClasses: Array.from(element.classList)
+								.filter((className) => className !== 'ng-star-inserted')
+								.join(' '),
+							disabled: option.disabled(),
+						};
+					}) ?? [];
+				this._setItems(items);
 				if (this.hasValue) {
 					this.itemsList.mapSelectedItems();
 				}
@@ -855,9 +876,12 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 					.filter(({ item }) => isDefined(item))
 					// process to update disabled and label
 					.forEach(({ option, item }) => {
+						const element = option.elementRef.nativeElement;
 						item.disabled = option.disabled();
-						item.label = option.label() || item.label;
-						item.classes = option.classes();
+						item.label = element.innerHTML || item.label;
+						item.classes = Array.from(element.classList)
+							.filter((className) => className !== 'ng-star-inserted')
+							.join(' ');
 					});
 			},
 			{ injector: this._injector },
@@ -988,14 +1012,20 @@ export class NgSelectComponent implements OnChanges, OnInit, AfterViewInit, Cont
 
 		const selected = this.selectedItems.map((x) => x.value);
 		if (this.multiple()) {
-			this._onChange(model);
+			this._setValueFromSelection(model);
 			this.changeEvent.emit(selected);
 		} else {
-			this._onChange(model[0] ?? null);
+			this._setValueFromSelection(model[0] ?? null);
 			this.changeEvent.emit(selected[0]);
 		}
 
 		this._cd.markForCheck();
+	}
+
+	private _setValueFromSelection(value: any | any[]): void {
+		this._skipNextValueSync = true;
+		this._valueWrittenFromSelection = true;
+		this.value.set(value);
 	}
 
 	private _clearSearch() {

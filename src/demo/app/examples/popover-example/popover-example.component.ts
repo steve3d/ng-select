@@ -1,5 +1,4 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { DataService, Person } from '../data.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -9,7 +8,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	templateUrl: './popover-example.component.html',
 	styleUrls: ['./popover-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule],
+	imports: [NgSelectComponent],
 })
 export class PopoverExampleComponent {
 	private dataService = inject(DataService);

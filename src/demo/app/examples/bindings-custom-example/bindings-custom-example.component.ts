@@ -1,6 +1,5 @@
 import { JsonPipe } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
@@ -8,7 +7,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './bindings-custom-example.component.html',
 	styleUrls: ['./bindings-custom-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, JsonPipe],
+	imports: [NgSelectComponent, JsonPipe],
 })
 export class BindingsCustomExampleComponent implements OnInit {
 	cities = [

@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
@@ -8,7 +7,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 	templateUrl: './tags-default-example.component.html',
 	styleUrls: ['./tags-default-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, JsonPipe],
+	imports: [NgSelectComponent, JsonPipe],
 })
 export class TagsDefaultExampleComponent implements OnInit {
 	selectedCompany;

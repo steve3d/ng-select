@@ -1,4 +1,4 @@
-<form [formGroup]="heroForm">
+<form [formRoot]="heroForm">
 	<div class="form-group">
 		<label for="state">City</label>
 		@if (isCitiesControlVisible) {
@@ -10,7 +10,7 @@
 				[multiple]="true"
 				placeholder="Select cities"
 				clearAllText="Clear"
-				formControlName="selectedCitiesIds">
+				[formField]="heroForm.selectedCitiesIds">
 			</ng-select>
 		}
 		<br />

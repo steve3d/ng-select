@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { NgClearButtonTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
@@ -7,7 +6,7 @@ import { NgClearButtonTemplateDirective, NgSelectComponent } from '@ng-select/ng
 	templateUrl: './template-clear-example.component.html',
 	styleUrls: ['./template-clear-example.component.scss'],
 	changeDetection: ChangeDetectionStrategy.Eager,
-	imports: [NgSelectComponent, FormsModule, NgClearButtonTemplateDirective],
+	imports: [NgSelectComponent, NgClearButtonTemplateDirective],
 })
 export class TemplateClearExampleComponent {
 	cities = [
