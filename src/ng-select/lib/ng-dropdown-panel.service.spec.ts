@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgDropdownPanelService } from '@ng-select/ng-select';
 import { describe, beforeEach, it, expect } from 'vitest';
@@ -7,7 +8,7 @@ describe('NgDropdownPanelService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			providers: [NgDropdownPanelService],
+			providers: [provideZonelessChangeDetection(), NgDropdownPanelService],
 		});
 
 		service = TestBed.inject(NgDropdownPanelService);

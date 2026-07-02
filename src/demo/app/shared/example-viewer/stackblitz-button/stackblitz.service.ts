@@ -23,7 +23,6 @@ const dependencies = {
 	'@ng-select/ng-option-highlight': '*',
 	'@ng-bootstrap/ng-bootstrap': '*',
 	rxjs: '^6.5.3 || ^7.4.0',
-	'zone.js': '^0.12.0',
 };
 
 @Injectable({

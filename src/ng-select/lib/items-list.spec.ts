@@ -1,4 +1,4 @@
-import { ComponentRef } from '@angular/core';
+import { ComponentRef, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ItemsList } from './items-list';
@@ -592,7 +592,7 @@ describe('ItemsList', () => {
 	}> {
 		await TestBed.configureTestingModule({
 			imports: [NgSelectComponent],
-			providers: [provideNgSelect()],
+			providers: [provideZonelessChangeDetection(), provideNgSelect()],
 		}).compileComponents();
 
 		const fixture = TestBed.createComponent(NgSelectComponent);

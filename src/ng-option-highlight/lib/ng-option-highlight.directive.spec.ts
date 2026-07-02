@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -19,7 +19,10 @@ import { NgOptionHighlightDirective } from './ng-option-highlight.directive';
 	imports: [NgOptionHighlightDirective],
 })
 class TestComponent {
+	@Input()
 	term: string;
+
+	@Input()
 	showNew = false;
 }
 
@@ -29,10 +32,15 @@ describe('NgOptionHighlightDirective', () => {
 	beforeEach(() => {
 		fixture = TestBed.configureTestingModule({
 			imports: [TestComponent],
+			providers: [provideZonelessChangeDetection()],
 		}).createComponent(TestComponent);
 
 		fixture.detectChanges();
 	});
+
+	function setFixtureInput(name: string, value: unknown): void {
+		fixture.componentRef.setInput(name, value);
+	}
 
 	it('should have five elements with highlight directive', () => {
 		const highlightDirectives = fixture.debugElement.queryAll(By.directive(NgOptionHighlightDirective));
@@ -41,7 +49,7 @@ describe('NgOptionHighlightDirective', () => {
 
 	it('should have one element with highlighted text when term matching', () => {
 		const span = fixture.debugElement.query(By.css('#test1'));
-		fixture.componentInstance.term = 'is high';
+		setFixtureInput('term', 'is high');
 		fixture.detectChanges();
 		expect(span.nativeElement.querySelectorAll('.highlighted')[0].innerHTML).toBe('is');
 		expect(span.nativeElement.querySelectorAll('.highlighted')[1].innerHTML).toBe('high');
@@ -50,7 +58,7 @@ describe('NgOptionHighlightDirective', () => {
 
 	it('should have one element with no highlighted text when term not matching', () => {
 		const span = fixture.debugElement.query(By.css('#test2'));
-		fixture.componentInstance.term = 'non matching';
+		setFixtureInput('term', 'non matching');
 		fixture.detectChanges();
 		expect(span.nativeElement.querySelector('.highlighted')).toBeNull();
 		expect(span.nativeElement.innerHTML).toBe('My text is not highlighted');
@@ -58,7 +66,7 @@ describe('NgOptionHighlightDirective', () => {
 
 	it('should have multiple elements with highlighted text when term matching', () => {
 		const span = fixture.debugElement.query(By.css('#test3'));
-		fixture.componentInstance.term = 'text highlighted';
+		setFixtureInput('term', 'text highlighted');
 		fixture.detectChanges();
 		expect(span.nativeElement.querySelectorAll('.highlighted')[0].innerHTML).toBe('text');
 		expect(span.nativeElement.querySelectorAll('.highlighted')[1].innerHTML).toBe('highlighted');
@@ -67,16 +75,16 @@ describe('NgOptionHighlightDirective', () => {
 
 	it('Highlights special characters', () => {
 		const span = fixture.debugElement.query(By.css('#test4'));
-		fixture.componentInstance.term = 'ťëxť';
+		setFixtureInput('term', 'ťëxť');
 		fixture.detectChanges();
 		expect(span.nativeElement.querySelector('.highlighted').innerHTML).toBe('ťëxť');
 		expect(span.nativeElement.textContent).toBe('My ťëxť is highlighted text');
 	});
 
 	it('should highlight text when label changed', async () => {
-		fixture.componentInstance.term = 'new';
+		setFixtureInput('term', 'new');
 		fixture.detectChanges();
-		fixture.componentInstance.showNew = true;
+		setFixtureInput('showNew', true);
 		fixture.detectChanges();
 		await fixture.whenRenderingDone();
 		const span = fixture.debugElement.query(By.css('#test5'));
@@ -87,7 +95,7 @@ describe('NgOptionHighlightDirective', () => {
 	it('should highlight text with an special character at the beginning of the term', () => {
 		const span = fixture.debugElement.query(By.css('#test6'));
 
-		fixture.componentInstance.term = '+My text';
+		setFixtureInput('term', '+My text');
 		fixture.detectChanges();
 		expect(span.nativeElement.querySelectorAll('.highlighted')[0].innerHTML).toBe('+My');
 		expect(span.nativeElement.querySelectorAll('.highlighted')[1].innerHTML).toBe('text');
@@ -97,7 +105,7 @@ describe('NgOptionHighlightDirective', () => {
 	it('should highlight text with an special character at the end of the term', () => {
 		const span = fixture.debugElement.query(By.css('#test6'));
 
-		fixture.componentInstance.term = 'is)';
+		setFixtureInput('term', 'is)');
 		fixture.detectChanges();
 		expect(span.nativeElement.querySelectorAll('.highlighted')[0].innerHTML).toBe('is)');
 		expect(span.nativeElement.textContent).toBe('+My text is) high\\lighted');
@@ -106,7 +114,7 @@ describe('NgOptionHighlightDirective', () => {
 	it('should highlight text with an special character in the middle of the term', () => {
 		const span = fixture.debugElement.query(By.css('#test6'));
 
-		fixture.componentInstance.term = 'high\\l';
+		setFixtureInput('term', 'high\\l');
 		fixture.detectChanges();
 		expect(span.nativeElement.querySelectorAll('.highlighted')[0].innerHTML).toBe('high\\l');
 		expect(span.nativeElement.textContent).toBe('+My text is) high\\lighted');

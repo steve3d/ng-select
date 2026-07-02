@@ -8,7 +8,6 @@ import {
 	ElementRef,
 	inject,
 	input,
-	NgZone,
 	OnChanges,
 	OnInit,
 	output,
@@ -80,7 +79,6 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 	readonly scrollToEnd = output<void>();
 	readonly outsideClick = output<void>();
 	private _renderer = inject(Renderer2);
-	private _zone = inject(NgZone);
 	private _panelService = inject(NgDropdownPanelService);
 	private _document = inject(DOCUMENT, { optional: true })!;
 	private _destroyRef = inject(DestroyRef);
@@ -219,19 +217,17 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 	}
 
 	private _handleScroll() {
-		this._zone.runOutsideAngular(() => {
-			const scrollablePanel = this._scrollablePanel();
-			if (!scrollablePanel) {
-				return;
-			}
-			fromEvent(scrollablePanel, 'scroll')
-				.pipe(takeUntilDestroyed(this._destroyRef), auditTime(0, SCROLL_SCHEDULER))
-				.subscribe(() => {
-					if (scrollablePanel && 'scrollTop' in scrollablePanel) {
-						this._onContentScrolled(scrollablePanel.scrollTop);
-					}
-				});
-		});
+		const scrollablePanel = this._scrollablePanel();
+		if (!scrollablePanel) {
+			return;
+		}
+		fromEvent(scrollablePanel, 'scroll')
+			.pipe(takeUntilDestroyed(this._destroyRef), auditTime(0, SCROLL_SCHEDULER))
+			.subscribe(() => {
+				if (scrollablePanel && 'scrollTop' in scrollablePanel) {
+					this._onContentScrolled(scrollablePanel.scrollTop);
+				}
+			});
 	}
 
 	private _handleOutsideClick() {
@@ -239,11 +235,9 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 			return;
 		}
 
-		this._zone.runOutsideAngular(() => {
-			fromEvent(this._document, this.outsideClickEvent() ?? 'click', { capture: true })
-				.pipe(takeUntilDestroyed(this._destroyRef))
-				.subscribe(($event) => this._checkToClose($event));
-		});
+		fromEvent(this._document, this.outsideClickEvent() ?? 'click', { capture: true })
+			.pipe(takeUntilDestroyed(this._destroyRef))
+			.subscribe(($event) => this._checkToClose($event));
 	}
 
 	private _checkToClose($event: any) {
@@ -256,7 +250,7 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 			return;
 		}
 
-		this._zone.run(() => this.outsideClick.emit());
+		this.outsideClick.emit();
 	}
 
 	private _onItemsOrShowAddTagChange(items: NgOption[] = [], showAddTag: boolean, firstChange: boolean) {
@@ -280,26 +274,22 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 			return;
 		}
 
-		this._zone.runOutsideAngular(() => {
-			Promise.resolve().then(() => {
-				const panelHeight = this._scrollablePanel().clientHeight;
-				this._panelService.setDimensions(0, panelHeight);
-				this._handleDropdownPosition();
-				this.scrollTo(this.markedItem(), firstChange);
-			});
+		Promise.resolve().then(() => {
+			const panelHeight = this._scrollablePanel().clientHeight;
+			this._panelService.setDimensions(0, panelHeight);
+			this._handleDropdownPosition();
+			this.scrollTo(this.markedItem(), firstChange);
 		});
 	}
 
 	private _updateItemsRange(firstChange: boolean) {
-		this._zone.runOutsideAngular(() => {
-			this._measureDimensions().then(() => {
-				if (firstChange) {
-					this._renderItemsRange(this._startOffset);
-					this._handleDropdownPosition();
-				} else {
-					this._renderItemsRange();
-				}
-			});
+		this._measureDimensions().then(() => {
+			if (firstChange) {
+				this._renderItemsRange(this._startOffset);
+				this._handleDropdownPosition();
+			} else {
+				this._renderItemsRange();
+			}
 		});
 	}
 
@@ -340,10 +330,8 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 		this._updateVirtualHeight(range.scrollHeight);
 		this._contentPanel().style.transform = `translateY(${range.topPadding}px)`;
 
-		this._zone.run(() => {
-			this.update.emit(this.items().slice(range.start, range.end));
-			this.scroll.emit({ start: range.start, end: range.end });
-		});
+		this.update.emit(this.items().slice(range.start, range.end));
+		this.scroll.emit({ start: range.start, end: range.end });
 
 		if (isDefined(scrollTop) && this._lastScrollPosition === 0) {
 			this._scrollablePanel().scrollTop = scrollTop;
@@ -378,7 +366,7 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 		const padding = this.virtualScroll() ? this._virtualPadding() : this._contentPanel();
 
 		if (scrollTop + this._dropdown.clientHeight >= padding.clientHeight - 1) {
-			this._zone.run(() => this.scrollToEnd.emit());
+			this.scrollToEnd.emit();
 			this._scrollToEndFired = true;
 		}
 	}
@@ -450,31 +438,27 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 	}
 
 	private _setupMousedownListener(): void {
-		this._zone.runOutsideAngular(() => {
-			fromEvent(this._dropdown, 'mousedown')
-				.pipe(takeUntilDestroyed(this._destroyRef))
-				.subscribe((event: MouseEvent) => {
-					const target = event.target as HTMLElement;
-					if (target.tagName === 'INPUT') {
-						return;
-					}
-					event.preventDefault();
-				});
-		});
+		fromEvent(this._dropdown, 'mousedown')
+			.pipe(takeUntilDestroyed(this._destroyRef))
+			.subscribe((event: MouseEvent) => {
+				const target = event.target as HTMLElement;
+				if (target.tagName === 'INPUT') {
+					return;
+				}
+				event.preventDefault();
+			});
 	}
 
 	private _handleWindowScroll() {
 		if (!this.appendTo() && !this.popover()) {
 			return;
 		}
-		this._zone.runOutsideAngular(() => {
-			fromEvent(this._document, 'scroll', { capture: true, passive: true })
-				.pipe(takeUntilDestroyed(this._destroyRef), auditTime(0, SCROLL_SCHEDULER))
-				.subscribe(() => {
-					this._updateXPosition();
-					this._updateYPosition();
-				});
-		});
+		fromEvent(this._document, 'scroll', { capture: true, passive: true })
+			.pipe(takeUntilDestroyed(this._destroyRef), auditTime(0, SCROLL_SCHEDULER))
+			.subscribe(() => {
+				this._updateXPosition();
+				this._updateYPosition();
+			});
 	}
 
 	private _showPopoverIfNeeded() {
@@ -495,17 +479,15 @@ export class NgDropdownPanelComponent implements OnInit, OnChanges {
 			return;
 		}
 
-		this._zone.runOutsideAngular(() => {
-			const observer = new ResizeObserver(() => {
-				if (!this._parent) {
-					return;
-				}
-				this._updateXPosition();
-				this._updateYPosition();
-			});
-
-			observer.observe(this._select);
-			this._destroyRef.onDestroy(() => observer.disconnect());
+		const observer = new ResizeObserver(() => {
+			if (!this._parent) {
+				return;
+			}
+			this._updateXPosition();
+			this._updateYPosition();
 		});
+
+		observer.observe(this._select);
+		this._destroyRef.onDestroy(() => observer.disconnect());
 	}
 }

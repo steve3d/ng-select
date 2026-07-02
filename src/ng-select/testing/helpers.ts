@@ -5,17 +5,16 @@ import { KeyCode } from '../lib/ng-select.types';
 
 export class TestsErrorHandler {}
 
-/** Flush microtasks and macrotasks that run outside Angular's zone (e.g. virtual-scroll measurement). */
+/** Flush microtasks and macrotasks used by async DOM measurement. */
 export async function flushAsync(): Promise<void> {
 	await new Promise<void>((resolve) => queueMicrotask(resolve));
 	await new Promise<void>((resolve) => setTimeout(resolve, 0));
 }
 
 export async function tickAndDetectChanges(fixture: ComponentFixture<any>) {
-	fixture.detectChanges();
 	await fixture.whenStable();
 	await flushAsync();
-	fixture.detectChanges();
+	await fixture.whenStable();
 }
 
 export async function selectOption(fixture: ComponentFixture<any>, key: KeyCode, index: number) {
@@ -36,9 +35,18 @@ export function getNgSelectNativeElement(fixture: ComponentFixture<any>): HTMLEl
 }
 
 export function triggerKeyDownEvent(element: DebugElement, key: string, target: Element = null): void {
-	element.triggerEventHandler('keydown', {
+	const event = new KeyboardEvent('keydown', {
 		key,
-		preventDefault: () => {},
-		target,
+		bubbles: true,
+		cancelable: true,
 	});
+
+	if (target) {
+		Object.defineProperty(event, 'target', {
+			configurable: true,
+			value: target,
+		});
+	}
+
+	element.nativeElement.dispatchEvent(event);
 }

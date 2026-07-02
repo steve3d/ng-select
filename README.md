@@ -114,7 +114,6 @@ pnpm add @ng-select/ng-select
 
 ```typescript
 import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
-import { FormsModule } from '@angular/forms';
 
 @Component({
 	selector: 'example',
@@ -126,19 +125,24 @@ import { FormsModule } from '@angular/forms';
 export class ExampleComponent {}
 ```
 
-#### NgModule: Import the NgSelectModule and angular FormsModule module:
+#### NgModule: Import the NgSelectModule:
 
 ```typescript
 import { NgSelectModule } from '@ng-select/ng-select';
-import { FormsModule } from '@angular/forms';
 
 @NgModule({
 	declarations: [AppComponent],
-	imports: [NgSelectModule, FormsModule],
+	imports: [NgSelectModule],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
 ```
+
+### Forms and change detection
+
+This fork is signal-first and zoneless-compatible. It implements Angular signal forms support through `FormValueControl` and works with `provideZonelessChangeDetection()`.
+
+`ControlValueAccessor` integration is intentionally removed. Template-driven forms (`[(ngModel)]`) and reactive forms (`formControl`, `formControlName`) are not supported. For standalone value binding, use `[(value)]`. For forms, use Angular signal forms with `[formField]`.
 
 ### Step 3: Include a theme:
 
@@ -191,14 +195,22 @@ In template use `ng-select` component with your options
 
 ```html
 <!--Using ng-option and for loop-->
-<ng-select [(ngModel)]="selectedCar">
+<ng-select [(value)]="selectedCar">
 	@for (car of cars; track car.id) {
 	<ng-option [value]="car.id">{{car.name}}</ng-option>
 	}
 </ng-select>
 
 <!--Using items input-->
-<ng-select [items]="cars" bindLabel="name" bindValue="id" [(ngModel)]="selectedCar"> </ng-select>
+<ng-select [items]="cars" bindLabel="name" bindValue="id" [(value)]="selectedCar"> </ng-select>
+```
+
+Signal forms usage:
+
+```html
+<form [formRoot]="carForm">
+	<ng-select [items]="cars" bindLabel="name" bindValue="id" [formField]="carForm.selectedCar"> </ng-select>
+</form>
 ```
 
 For more detailed examples see [Demo](https://ng-select.github.io/ng-select#/data-sources) page
@@ -240,6 +252,7 @@ map: {
 | [selectableGroup]           | `boolean`                                            | false               | no       | Allow to select group when groupBy is used                                                                                                                                                     |
 | [selectableGroupAsModel]    | `boolean`                                            | true                | no       | Indicates whether to select all children or group itself                                                                                                                                       |
 | [items]                     | `Array<any>`                                         | `[]`                | yes      | Items array                                                                                                                                                                                    |
+| [value]                     | `any \| any[]`                                       | `null`              | no       | Selected value. Use `[(value)]` for standalone two-way binding.                                                                                                                                |
 | [loading]                   | `boolean`                                            | `-`                 | no       | You can set the loading state from the outside (e.g. async items loading)                                                                                                                      |
 | loadingText                 | `string`                                             | `Loading...`        | no       | Set custom text when for loading items                                                                                                                                                         |
 | labelForId                  | `string`                                             | `-`                 | no       | Id to associate control with label.                                                                                                                                                            |
@@ -251,7 +264,8 @@ map: {
 | notFoundText                | `string`                                             | `No items found`    | no       | Set custom text when filter returns empty result                                                                                                                                               |
 | placeholder                 | `string`                                             | `-`                 | no       | Placeholder text.                                                                                                                                                                              |
 | [searchable]                | `boolean`                                            | `true`              | no       | Allow to search for value. Default `true`                                                                                                                                                      |
-| [readonly]                  | `boolean`                                            | `false`             | no       | Set ng-select as readonly. Mostly used with reactive forms.                                                                                                                                    |
+| [readonly]                  | `boolean`                                            | `false`             | no       | Set ng-select as readonly.                                                                                                                                                                     |
+| [disabled]                  | `boolean`                                            | `false`             | no       | Set ng-select as disabled.                                                                                                                                                                     |
 | [searchFn]                  | `(term: string, item: any) => boolean`               | `null`              | no       | Allow to filter by custom search function                                                                                                                                                      |
 | [searchWhileComposing]      | `boolean`                                            | `true`              | no       | Whether items should be filtered while composition started                                                                                                                                     |
 | [trackByFn]                 | `(item: any) => any`                                 | `null`              | no       | Provide custom trackBy function                                                                                                                                                                |
@@ -261,7 +275,7 @@ map: {
 | [selectOnTab]               | `boolean`                                            | `false`             | no       | Select marked dropdown item using tab. Default `false`                                                                                                                                         |
 | [tabFocusOnClearButton]     | `boolean`                                            | `true`              | no       | Control tab navigation behavior for the clear button. Default `true`                                                                                                                           |
 | [openOnEnter]               | `boolean`                                            | `true`              | no       | Open dropdown using enter. Default `true`                                                                                                                                                      |
-| outsideClickEventType       | `'click'` \| `'mousedown'`                           | `'click'`           | no       | Configure which DOM event type is used for outside click detection. Use `'mousedown'` to fix issues with backdrop/loading overlays that appear on dropdown open                                |
+| outsideClickEvent           | `'click'` \| `'mousedown'`                           | `'click'`           | no       | Configure which DOM event type is used for outside click detection. Use `'mousedown'` to fix issues with backdrop/loading overlays that appear on dropdown open                                |
 | [popover]                   | `boolean`                                            | `false`             | no       | Display the dropdown in the top-layer using the native Popover API. Useful when the dropdown is clipped or hidden behind dialogs or other stacking contexts. Alternative to `appendTo`         |
 | [typeahead]                 | `Subject`                                            | `-`                 | no       | Custom autocomplete or advanced filter.                                                                                                                                                        |
 | [minTermLength]             | `number`                                             | `0`                 | no       | Minimum term length to start a search. Should be used with `typeahead`                                                                                                                         |
@@ -377,7 +391,7 @@ WARNING: Keep in mind that ng-deep is deprecated and there is no alternative to 
 
 ### Validation state
 
-By default when you use reactive forms validators or template driven forms validators css class `ng-invalid` will be applied on ng-select. You can show errors state by adding custom css style
+When Angular signal forms validation applies the `ng-invalid` and `ng-touched` CSS classes to `ng-select`, you can show an error state by adding custom CSS.
 
 ```css
 ng-select.ng-invalid.ng-touched .ng-select-container {

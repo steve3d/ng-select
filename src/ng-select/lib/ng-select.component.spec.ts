@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, DebugElement, ErrorHandler, Type, viewChild, ViewEncapsulation } from '@angular/core';
+import { Component, DebugElement, ErrorHandler, Input, provideZonelessChangeDetection, Type, viewChild, ViewEncapsulation } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
@@ -55,8 +55,8 @@ describe('NgSelectComponent', () => {
 				fixture.detectChanges();
 
 				// set default values
-				componentInstance.searchable = false;
-				componentInstance.clearable = false;
+				setFixtureInput(fixture, 'searchable', false);
+				setFixtureInput(fixture, 'clearable', false);
 				fixture.detectChanges();
 			});
 
@@ -76,7 +76,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should have ng-select-typeahead class when typeahead is true', () => {
-				componentInstance.typeahead = true;
+				setFixtureInput(fixture, 'typeahead', true);
 				fixture.detectChanges();
 
 				const ngSelectEl = getNgSelectNativeElement(fixture);
@@ -94,7 +94,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should have appropriate ng-select-typeahead when taggable is true', () => {
-				componentInstance.addTag = () => 'new tag';
+				setFixtureInput(fixture, 'addTag', () => 'new tag');
 				fixture.detectChanges();
 
 				const ngSelectEl = getNgSelectNativeElement(fixture);
@@ -112,7 +112,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should have appropriate ng-select-typeahead when searchable is true', () => {
-				componentInstance.searchable = true;
+				setFixtureInput(fixture, 'searchable', true);
 				fixture.detectChanges();
 
 				const ngSelectEl = getNgSelectNativeElement(fixture);
@@ -130,7 +130,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should have appropriate ng-select-typeahead when clearable is true', () => {
-				componentInstance.clearable = true;
+				setFixtureInput(fixture, 'clearable', true);
 				fixture.detectChanges();
 
 				const ngSelectEl = getNgSelectNativeElement(fixture);
@@ -148,7 +148,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should have appropriate ng-select-typeahead when disabled is true', () => {
-				componentInstance.readonly = true;
+				setFixtureInput(fixture, 'readonly', true);
 				fixture.detectChanges();
 
 				const ngSelectEl = getNgSelectNativeElement(fixture);
@@ -194,7 +194,7 @@ describe('NgSelectComponent', () => {
 			const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
 			expect(input.getAttribute('aria-invalid')).toBe('false');
 
-			fixture.componentInstance.inputAttrs = { 'aria-invalid': 'true' };
+			setFixtureInput(fixture, 'inputAttrs', { 'aria-invalid': 'true' });
 			await tickAndDetectChanges(fixture);
 
 			expect(input.getAttribute('aria-invalid')).toBe('true');
@@ -342,7 +342,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
 				expect.objectContaining({
@@ -350,7 +350,7 @@ describe('NgSelectComponent', () => {
 				}),
 			]);
 
-			fixture.componentInstance.selectedCity = null;
+			setFixtureInput(fixture, 'selectedCity', null);
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.select().selectedItems).toEqual([]);
@@ -371,16 +371,16 @@ describe('NgSelectComponent', () => {
 			);
 
 			// select first city
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
 			// toggle to hide/show
-			fixture.componentInstance.toggleVisible();
+			setFixtureInput(fixture, 'visible', false);
 			await tickAndDetectChanges(fixture);
-			fixture.componentInstance.toggleVisible();
+			setFixtureInput(fixture, 'visible', true);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.selectedCity = null;
+			setFixtureInput(fixture, 'selectedCity', null);
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.select().selectedItems).toEqual([]);
@@ -397,11 +397,11 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [];
-			fixture.componentInstance.selectedCityId = 7;
+			setFixtureInput(fixture, 'cities', []);
+			setFixtureInput(fixture, 'selectedCityId', 7);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [{ id: 7, name: 'Pailgis' }];
+			setFixtureInput(fixture, 'cities', [{ id: 7, name: 'Pailgis' }]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -423,11 +423,11 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [];
-			fixture.componentInstance.selectedCity = { id: 7, name: 'Pailgis' };
+			setFixtureInput(fixture, 'cities', []);
+			setFixtureInput(fixture, 'selectedCity', { id: 7, name: 'Pailgis' });
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [{ id: 7, name: 'Pailgis' }];
+			setFixtureInput(fixture, 'cities', [{ id: 7, name: 'Pailgis' }]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -452,11 +452,11 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 
-			fixture.componentInstance.cities = [];
-			fixture.componentInstance.selectedCityId = 7;
+			setFixtureInput(fixture, 'cities', []);
+			setFixtureInput(fixture, 'selectedCityId', 7);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [{ id: 7, name: 'Pailgis' }];
+			setFixtureInput(fixture, 'cities', [{ id: 7, name: 'Pailgis' }]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -482,11 +482,11 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 
-			fixture.componentInstance.cities = [];
-			fixture.componentInstance.selectedCityId = 7;
+			setFixtureInput(fixture, 'cities', []);
+			setFixtureInput(fixture, 'selectedCityId', 7);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [{ id: 7, name: 'Pailgis' }];
+			setFixtureInput(fixture, 'cities', [{ id: 7, name: 'Pailgis' }]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -509,11 +509,11 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [];
-			fixture.componentInstance.selectedCity = { id: 7, name: 'Pailgis' };
+			setFixtureInput(fixture, 'cities', []);
+			setFixtureInput(fixture, 'selectedCity', { id: 7, name: 'Pailgis' });
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [{ id: 7, name: 'Pailgis' }];
+			setFixtureInput(fixture, 'cities', [{ id: 7, name: 'Pailgis' }]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -535,7 +535,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [{ label: 'New York city', name: 'New York' }];
+			setFixtureInput(fixture, 'cities', [{ label: 'New York city', name: 'New York' }]);
 			await tickAndDetectChanges(fixture);
 			select = fixture.componentInstance.select();
 
@@ -551,7 +551,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [{ label: '<img src="azd" (error)="alert(1)" />', name: 'New York' }];
+			setFixtureInput(fixture, 'cities', [{ label: '<img src="azd" (error)="alert(1)" />', name: 'New York' }]);
 			await tickAndDetectChanges(fixture);
 			const select = fixture.componentInstance.select();
 			await openSelect(select, fixture);
@@ -572,7 +572,7 @@ describe('NgSelectComponent', () => {
 			);
 
 			select = fixture.componentInstance.select();
-			fixture.componentInstance.selectedCity = { id: 1, name: 'New York' };
+			setFixtureInput(fixture, 'selectedCity', { id: 1, name: 'New York' });
 			await tickAndDetectChanges(fixture);
 			expect(select.selectedItems).toEqual([
 				expect.objectContaining({
@@ -581,14 +581,14 @@ describe('NgSelectComponent', () => {
 				}),
 			]);
 
-			fixture.componentInstance.cities = [
+			setFixtureInput(fixture, 'cities', [
 				{ id: 1, name: 'New York' },
 				{ id: 2, name: 'London' },
 				{
 					id: 3,
 					name: 'Beijing',
 				},
-			];
+			]);
 			await tickAndDetectChanges(fixture);
 			const newYork = select.itemsList.items[0];
 			expect(select.selectedItems[0]).toBe(select.itemsList.items[0]);
@@ -608,10 +608,10 @@ describe('NgSelectComponent', () => {
 			);
 
 			select = fixture.componentInstance.select();
-			fixture.componentInstance.selectedCities = [
+			setFixtureInput(fixture, 'selectedCities', [
 				{ id: 1, name: 'New York' },
 				{ id: 2, name: 'London' },
-			];
+			]);
 			await tickAndDetectChanges(fixture);
 			expect(select.selectedItems).toEqual([
 				expect.objectContaining({
@@ -621,14 +621,14 @@ describe('NgSelectComponent', () => {
 				expect.objectContaining({ label: 'London', value: { id: 2, name: 'London' } }),
 			]);
 
-			fixture.componentInstance.cities = [
+			setFixtureInput(fixture, 'cities', [
 				{ id: 1, name: 'New York' },
 				{ id: 2, name: 'London' },
 				{
 					id: 3,
 					name: 'Beijing',
 				},
-			];
+			]);
 			await tickAndDetectChanges(fixture);
 			const newYork = select.itemsList.items[0];
 			const kaunas = select.itemsList.items[1];
@@ -649,12 +649,12 @@ describe('NgSelectComponent', () => {
 			);
 
 			const cities = [{ id: 7, name: 'Pailgis' }];
-			fixture.componentInstance.selectedCity = { id: 7, name: 'Pailgis' };
+			setFixtureInput(fixture, 'selectedCity', { id: 7, name: 'Pailgis' });
 			await tickAndDetectChanges(fixture);
-			fixture.componentInstance.cities = [
+			setFixtureInput(fixture, 'cities', [
 				{ id: 1, name: 'New York' },
 				{ id: 2, name: 'London' },
-			];
+			]);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems[0]).toEqual(
 				expect.objectContaining({
@@ -673,10 +673,10 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [];
+			setFixtureInput(fixture, 'cities', []);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.selectedCity = { id: 7, name: 'Pailgis' };
+			setFixtureInput(fixture, 'selectedCity', { id: 7, name: 'Pailgis' });
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
@@ -696,9 +696,9 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [];
+			setFixtureInput(fixture, 'cities', []);
 			await tickAndDetectChanges(fixture);
-			fixture.componentInstance.selectedCity = <any>'London';
+			setFixtureInput(fixture, 'selectedCity', <any>'London');
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
@@ -720,20 +720,20 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
 			const selectValue = fixture.componentInstance.select();
 			fixture.componentInstance.select().select(selectValue.itemsList.items[1]);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.selectedCity).toEqual(fixture.componentInstance.cities[1]);
 
 			selectValue.clearModel();
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.selectedCity).toBeNull();
@@ -751,13 +751,13 @@ describe('NgSelectComponent', () => {
 
 			select = fixture.componentInstance.select();
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.selectedCity).toEqual(fixture.componentInstance.cities[0]);
@@ -781,7 +781,7 @@ describe('NgSelectComponent', () => {
 			select.select(select.itemsList.items[1]);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 			await tickAndDetectChanges(fixture);
 
 			expect(select.selectedItems[0]).toEqual(
@@ -801,13 +801,13 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
 			const lastSelection: any = fixture.componentInstance.select().selectedItems[0];
 			expect(lastSelection.selected).toBeTruthy();
 
-			fixture.componentInstance.selectedCity = null;
+			setFixtureInput(fixture, 'selectedCity', null);
 			await tickAndDetectChanges(fixture);
 			expect(lastSelection.selected).toBeFalsy();
 		});
@@ -824,14 +824,14 @@ describe('NgSelectComponent', () => {
 			);
 
 			const disabled = { ...fixture.componentInstance.cities[1], disabled: true };
-			fixture.componentInstance.selectedCities = <any>[fixture.componentInstance.cities[0], disabled];
+			setFixtureInput(fixture, 'selectedCities', <any>[fixture.componentInstance.cities[0], disabled]);
 			await tickAndDetectChanges(fixture);
 
 			fixture.componentInstance.cities[1].disabled = true;
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.selectedCities = [];
+			setFixtureInput(fixture, 'selectedCities', []);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems).toEqual([]);
 		});
@@ -847,11 +847,11 @@ describe('NgSelectComponent', () => {
 			);
 
 			fixture.componentInstance.cities[0].disabled = true;
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[1];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[1]);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems.length).toBe(1);
 		});
@@ -867,16 +867,16 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[0]];
+			setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[0]]);
 			await tickAndDetectChanges(fixture);
 			select = fixture.componentInstance.select();
 			expect(select.selectedItems.length).toBe(1);
 
-			fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[1]];
+			setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[1]]);
 			await tickAndDetectChanges(fixture);
 			expect(select.selectedItems.length).toBe(1);
 
-			fixture.componentInstance.selectedCities = [];
+			setFixtureInput(fixture, 'selectedCities', []);
 			await tickAndDetectChanges(fixture);
 			expect(select.selectedItems.length).toBe(0);
 		});
@@ -892,10 +892,10 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCities = fixture.componentInstance.cities.slice(0, 2);
+			setFixtureInput(fixture, 'selectedCities', fixture.componentInstance.cities.slice(0, 2));
 			await tickAndDetectChanges(fixture);
 
-			fixture.componentInstance.cities = [{ id: 1, name: 'New city' }];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New city' }]);
 			await tickAndDetectChanges(fixture);
 
 			const internalItems = fixture.componentInstance.select().itemsList.items;
@@ -914,14 +914,14 @@ describe('NgSelectComponent', () => {
 			);
 			select = fixture.componentInstance.select();
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[2];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[2]);
 			await tickAndDetectChanges(fixture);
 			triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 			expect(fixture.componentInstance.select().itemsList.markedItem.value).toEqual({ name: 'Beijing', id: 3 });
 
-			fixture.componentInstance.selectedCity = { name: 'New city', id: 5 };
+			setFixtureInput(fixture, 'selectedCity', { name: 'New city', id: 5 });
 			await tickAndDetectChanges(fixture);
-			fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+			setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().itemsList.markedItem.value).toEqual({ name: 'New York', id: 1 });
 		});
@@ -940,7 +940,7 @@ describe('NgSelectComponent', () => {
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.selectedCityId).toEqual(1);
 
-			fixture.componentInstance.selectedCityId = 2;
+			setFixtureInput(fixture, 'selectedCityId', 2);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
 				expect.objectContaining({
@@ -967,7 +967,7 @@ describe('NgSelectComponent', () => {
 				}),
 			]);
 
-			fixture.componentInstance.selectedCountry = fixture.componentInstance.countries[0];
+			setFixtureInput(fixture, 'selectedCountry', fixture.componentInstance.countries[0]);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
 				expect.objectContaining({
@@ -991,7 +991,7 @@ describe('NgSelectComponent', () => {
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.selectedCountry).toEqual('b');
 
-			fixture.componentInstance.selectedCountry = fixture.componentInstance.countries[2].description.id;
+			setFixtureInput(fixture, 'selectedCountry', fixture.componentInstance.countries[2].description.id);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
 				expect.objectContaining({
@@ -1016,7 +1016,7 @@ describe('NgSelectComponent', () => {
 			await selectOption(fixture, KeyCode.ArrowDown, 0);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.selectedCity).toBe(<any>'New York');
-			fixture.componentInstance.selectedCity = <any>'London';
+			setFixtureInput(fixture, 'selectedCity', <any>'London');
 			await tickAndDetectChanges(fixture);
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
 				expect.objectContaining({
@@ -1041,7 +1041,7 @@ describe('NgSelectComponent', () => {
 			expect(fixture.componentInstance.selectedCity).toEqual(fixture.componentInstance.cities[0]);
 
 			// from model to component
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[1];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[1]);
 			await tickAndDetectChanges(fixture);
 
 			expect(fixture.componentInstance.select().selectedItems).toEqual([
@@ -1063,8 +1063,8 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York', label: '' }];
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York', label: '' }]);
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -1088,8 +1088,8 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York', label: 'the capital of USA' }];
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York', label: 'the capital of USA' }]);
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -1109,8 +1109,8 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York', label: 'the capital of USA' }];
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York', label: 'the capital of USA' }]);
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 
 			select = fixture.componentInstance.select();
@@ -1136,7 +1136,7 @@ describe('NgSelectComponent', () => {
 				await tickAndDetectChanges(fixture);
 				expect(select.itemsList.items.length).toEqual(5);
 
-				fixture.componentInstance.cities = [];
+				setFixtureInput(fixture, 'cities', []);
 				await tickAndDetectChanges(fixture);
 				expect(select.itemsList.items.length).toEqual(0);
 			});
@@ -1153,10 +1153,10 @@ describe('NgSelectComponent', () => {
 				select = fixture.componentInstance.select();
 				expect(select.itemsList.items.length).toEqual(5);
 
-				fixture.componentInstance.cities = [
+				setFixtureInput(fixture, 'cities', [
 					{ id: 1, name: 'New York' },
 					{ id: 2, name: 'London' },
-				];
+				]);
 				await tickAndDetectChanges(fixture);
 				expect(select.itemsList.items.length).toEqual(2);
 			});
@@ -1171,10 +1171,10 @@ describe('NgSelectComponent', () => {
                     </ng-select>`,
 				);
 
-				fixture.componentInstance.cities = [
+				setFixtureInput(fixture, 'cities', [
 					{ id: 1, name: 'New York', optionClass: 'custom-city' },
 					{ id: 2, name: 'London', optionClass: 'muted-city' },
-				];
+				]);
 				await tickAndDetectChanges(fixture);
 				select = fixture.componentInstance.select();
 				select.open();
@@ -1202,7 +1202,7 @@ describe('NgSelectComponent', () => {
 				expect(fixture.componentInstance.selectedCityId).toEqual(1);
 
 				// from model to component
-				fixture.componentInstance.selectedCityId = 2;
+				setFixtureInput(fixture, 'selectedCityId', 2);
 				await tickAndDetectChanges(fixture);
 
 				expect(fixture.componentInstance.select().selectedItems).toEqual([
@@ -1223,7 +1223,7 @@ describe('NgSelectComponent', () => {
 				);
 
 				const selected = { name: 'New York', id: 1 };
-				fixture.componentInstance.selectedCity = selected;
+				setFixtureInput(fixture, 'selectedCity', selected);
 				await tickAndDetectChanges(fixture);
 
 				expect(fixture.componentInstance.select().selectedItems).toEqual([
@@ -1249,7 +1249,7 @@ describe('NgSelectComponent', () => {
 			const invalidValues = [undefined, null];
 
 			for (const v of invalidValues) {
-				fixture.componentInstance.selectedCity = <any>v;
+				setFixtureInput(fixture, 'selectedCity', <any>v);
 				await tickAndDetectChanges(fixture);
 				expect(fixture.componentInstance.select().selectedItems.length).toBe(0);
 			}
@@ -1269,7 +1269,7 @@ describe('NgSelectComponent', () => {
 			const invalidValues = [{}, '', undefined, 0, 1, 'false', 'true', false];
 
 			for (const v of invalidValues) {
-				fixture.componentInstance.selectedCity = <any>v;
+				setFixtureInput(fixture, 'selectedCity', <any>v);
 				await tickAndDetectChanges(fixture);
 				expect(fixture.componentInstance.select().selectedItems.length).toBe(0);
 			}
@@ -1288,7 +1288,7 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.selectedCityId = 2;
+					setFixtureInput(fixture, 'selectedCityId', 2);
 					await tickAndDetectChanges(fixture);
 					const result = [
 						expect.objectContaining({
@@ -1311,7 +1311,7 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.selectedCityId = 2;
+					setFixtureInput(fixture, 'selectedCityId', 2);
 					await tickAndDetectChanges(fixture);
 					await tickAndDetectChanges(fixture);
 
@@ -1323,7 +1323,7 @@ describe('NgSelectComponent', () => {
 					let hasValueEl = fixture.nativeElement.querySelector('.ng-has-value');
 					expect(hasValueEl).not.toBeNull();
 
-					fixture.componentInstance.selectedCityId = null;
+					setFixtureInput(fixture, 'selectedCityId', null);
 					await tickAndDetectChanges(fixture);
 					await tickAndDetectChanges(fixture);
 					hasValueEl = fixture.nativeElement.querySelector('.ng-has-value');
@@ -1341,8 +1341,8 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.cities = [{ id: 0, name: 'New York' }];
-					fixture.componentInstance.selectedCityId = 0;
+					setFixtureInput(fixture, 'cities', [{ id: 0, name: 'New York' }]);
+					setFixtureInput(fixture, 'selectedCityId', 0);
 
 					await tickAndDetectChanges(fixture);
 
@@ -1365,7 +1365,7 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.selectedCity = { id: 2, name: 'London' };
+					setFixtureInput(fixture, 'selectedCity', { id: 2, name: 'London' });
 					await tickAndDetectChanges(fixture);
 					const result = [
 						expect.objectContaining({
@@ -1386,7 +1386,7 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.selectedCity = fixture.componentInstance.cities[1];
+					setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[1]);
 					await tickAndDetectChanges(fixture);
 					const result = [
 						expect.objectContaining({
@@ -1410,8 +1410,8 @@ describe('NgSelectComponent', () => {
 
 					const city = { name: 'New York', id: 7, district: 'Ozo parkas' };
 					fixture.componentInstance.cities.push(city);
-					fixture.componentInstance.cities = [...fixture.componentInstance.cities];
-					fixture.componentInstance.selectedCity = { name: 'New York', district: 'Ozo parkas' } as any;
+					setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
+					setFixtureInput(fixture, 'selectedCity', { name: 'New York', district: 'Ozo parkas' } as any);
 
 					await tickAndDetectChanges(fixture);
 					expect(fixture.componentInstance.select().selectedItems[0].value).toEqual(city);
@@ -1430,9 +1430,9 @@ describe('NgSelectComponent', () => {
 					);
 
 					const cmp = fixture.componentInstance;
-					cmp.selectedCityId = cmp.cities[1].id.toString();
+					setFixtureInput(fixture, 'selectedCityId', cmp.cities[1].id.toString());
 
-					cmp.compareWith = (city, model: string) => city.id === +model;
+					setFixtureInput(fixture, 'compareWith', (city, model: string) => city.id === +model);
 
 					await tickAndDetectChanges(fixture);
 					expect(cmp.select().selectedItems[0].value).toEqual(cmp.cities[1]);
@@ -1450,23 +1450,23 @@ describe('NgSelectComponent', () => {
 					);
 
 					const cmp = fixture.componentInstance;
-					cmp.cities = [];
-					cmp.selectedCityId = 2;
+					setFixtureInput(fixture, 'cities', []);
+					setFixtureInput(fixture, 'selectedCityId', 2);
 					const compareWith = vi
 						.fn()
 						.mockName('compareWith')
 						.mockImplementation((city, model) => city.id === model);
-					cmp.compareWith = compareWith;
+					setFixtureInput(fixture, 'compareWith', compareWith);
 
 					await tickAndDetectChanges(fixture);
 
 					expect(cmp.compareWith).not.toHaveBeenCalled();
 					expect(cmp.select().selectedItems[0].value).toEqual({ name: null, id: 2 });
 
-					cmp.cities = [
+					setFixtureInput(fixture, 'cities', [
 						{ id: 1, name: 'New York' },
 						{ id: 2, name: 'London' },
-					];
+					]);
 
 					await tickAndDetectChanges(fixture);
 
@@ -1491,14 +1491,18 @@ describe('NgSelectComponent', () => {
 					const cmp = fixture.componentInstance;
 					const select = fixture.componentInstance.select();
 					// Start with empty items and a selected item
-					cmp.itemsWithNestedBindValue = [];
-					cmp.nestedSelectedItem = { code: 'A', value: 'description' };
-					cmp.compareWith = vi
-						.fn()
-						.mockName('compareWith')
-						.mockImplementation((toCompare, selected) => {
-							return toCompare && selected && toCompare.item && toCompare.item.code === selected.code;
-						});
+					setFixtureInput(fixture, 'itemsWithNestedBindValue', []);
+					setFixtureInput(fixture, 'nestedSelectedItem', { code: 'A', value: 'description' });
+					setFixtureInput(
+						fixture,
+						'compareWith',
+						vi
+							.fn()
+							.mockName('compareWith')
+							.mockImplementation((toCompare, selected) => {
+								return toCompare && selected && toCompare.item && toCompare.item.code === selected.code;
+							}),
+					);
 
 					await tickAndDetectChanges(fixture);
 
@@ -1508,13 +1512,13 @@ describe('NgSelectComponent', () => {
 					expect(select.selectedItems.length).toBe(1);
 
 					// Now update items to contain the matching item
-					cmp.itemsWithNestedBindValue = [
+					setFixtureInput(fixture, 'itemsWithNestedBindValue', [
 						{
 							description: 'alternate description',
 							item: { code: 'A', value: 'description' },
 							group: 'some group',
 						},
-					];
+					]);
 
 					await tickAndDetectChanges(fixture);
 
@@ -1541,8 +1545,8 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.cities = [];
-					fixture.componentInstance.selectedCityId = 2;
+					setFixtureInput(fixture, 'cities', []);
+					setFixtureInput(fixture, 'selectedCityId', 2);
 					await tickAndDetectChanges(fixture);
 					const selected = fixture.componentInstance.select().selectedItems[0];
 					expect(selected.label).toEqual('');
@@ -1574,7 +1578,7 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.selectedCityIds = [2, 3];
+					setFixtureInput(fixture, 'selectedCityIds', [2, 3]);
 					await tickAndDetectChanges(fixture);
 
 					expect(fixture.componentInstance.select().selectedItems).toEqual(result);
@@ -1591,10 +1595,10 @@ describe('NgSelectComponent', () => {
                         </ng-select>`,
 					);
 
-					fixture.componentInstance.selectedCities = [
+					setFixtureInput(fixture, 'selectedCities', [
 						{ id: 2, name: 'London' },
 						{ id: 3, name: 'Beijing' },
-					];
+					]);
 					await tickAndDetectChanges(fixture);
 					expect(fixture.componentInstance.select().selectedItems).toEqual(result);
 				});
@@ -1622,10 +1626,14 @@ describe('NgSelectComponent', () => {
 			expect(options[1].innerText).toBe('London');
 			expect(options[2].innerText).toBe('Beijing');
 
-			fixture.componentInstance.cities = Array.from(Array(30).keys()).map((_, i) => ({
-				id: i,
-				name: String.fromCharCode(97 + i),
-			}));
+			setFixtureInput(
+				fixture,
+				'cities',
+				Array.from(Array(30).keys()).map((_, i) => ({
+					id: i,
+					name: String.fromCharCode(97 + i),
+				})),
+			);
 			await tickAndDetectChanges(fixture);
 			options = fixture.debugElement.nativeElement.querySelectorAll('.ng-option');
 			expect(options.length).toBe(30);
@@ -1669,10 +1677,14 @@ describe('NgSelectComponent', () => {
 			expect(options[1].innerText).toBe('London');
 			expect(options[2].innerText).toBe('Beijing');
 
-			fixture.componentInstance.cities = Array.from(Array(30).keys()).map((_, i) => ({
-				id: i,
-				name: String.fromCharCode(97 + i),
-			}));
+			setFixtureInput(
+				fixture,
+				'cities',
+				Array.from(Array(30).keys()).map((_, i) => ({
+					id: i,
+					name: String.fromCharCode(97 + i),
+				})),
+			);
 			await tickAndDetectChanges(fixture);
 
 			const panelItems = document.querySelector('.ng-dropdown-panel-items');
@@ -1701,10 +1713,14 @@ describe('NgSelectComponent', () => {
 			expect(options[1].innerText).toBe('London');
 			expect(options[2].innerText).toBe('Beijing');
 
-			fixture.componentInstance.cities = Array.from(Array(30).keys()).map((_, i) => ({
-				id: i,
-				name: String.fromCharCode(97 + i),
-			}));
+			setFixtureInput(
+				fixture,
+				'cities',
+				Array.from(Array(30).keys()).map((_, i) => ({
+					id: i,
+					name: String.fromCharCode(97 + i),
+				})),
+			);
 			await tickAndDetectChanges(fixture);
 			options = fixture.debugElement.nativeElement.querySelectorAll('.ng-option');
 			const { itemsPerViewport } = (select.dropdownPanel() as any)._panelService.dimensions;
@@ -1745,8 +1761,9 @@ describe('NgSelectComponent', () => {
 
 			const select = fixture.componentInstance.select();
 			const cmp = fixture.componentInstance;
-			cmp.cities = Array.from(Array(30).keys()).map((_, i) => ({ id: i, name: String.fromCharCode(97 + i) }));
-			cmp.city = cmp.cities[10];
+			const cities = Array.from(Array(30).keys()).map((_, i) => ({ id: i, name: String.fromCharCode(97 + i) }));
+			setFixtureInput(fixture, 'cities', cities);
+			setFixtureInput(fixture, 'city', cities[10]);
 			await tickAndDetectChanges(fixture);
 
 			await openSelect(select, fixture);
@@ -1777,7 +1794,11 @@ describe('NgSelectComponent', () => {
 			cmp.select().open();
 			await tickAndDetectChanges(fixture);
 
-			cmp.cities = Array.from(Array(30).keys()).map((_, i) => ({ id: i, name: String.fromCharCode(97 + i) }));
+			setFixtureInput(
+				fixture,
+				'cities',
+				Array.from(Array(30).keys()).map((_, i) => ({ id: i, name: String.fromCharCode(97 + i) })),
+			);
 			await tickAndDetectChanges(fixture);
 
 			cmp.select().dropdownPanel().scrollTo(cmp.select().itemsList.items[1]);
@@ -1798,7 +1819,11 @@ describe('NgSelectComponent', () => {
 			const cmp = fixture.componentInstance;
 			const el: HTMLElement = fixture.debugElement.nativeElement;
 
-			cmp.cities = Array.from(Array(30).keys()).map((_, i) => ({ id: i, name: String.fromCharCode(97 + i) }));
+			setFixtureInput(
+				fixture,
+				'cities',
+				Array.from(Array(30).keys()).map((_, i) => ({ id: i, name: String.fromCharCode(97 + i) })),
+			);
 			await openSelect(cmp.select(), fixture);
 
 			cmp.select().dropdownPanel().scrollTo(cmp.select().itemsList.items[15]);
@@ -2029,15 +2054,14 @@ describe('NgSelectComponent', () => {
 			it('should toggle popover value dynamically', async () => {
 				const fixture = createTestingModule(NgSelectTestComponent, `<ng-select [items]="cities" bindLabel="name" [popover]="popoverEnabled"></ng-select>`);
 
-				const component = fixture.componentInstance as any;
-				component.popoverEnabled = false;
-				fixture.detectChanges();
+				setFixtureInput(fixture, 'popoverEnabled', false);
+				await tickAndDetectChanges(fixture);
 
 				let select = fixture.componentInstance.select();
 				expect(select.popover()).toBe(false);
 
-				component.popoverEnabled = true;
-				fixture.detectChanges();
+				setFixtureInput(fixture, 'popoverEnabled', true);
+				await tickAndDetectChanges(fixture);
 
 				select = fixture.componentInstance.select();
 				expect(select.popover()).toBe(true);
@@ -2180,7 +2204,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should open empty dropdown if no items', async () => {
-				fixture.componentInstance.cities = [];
+				setFixtureInput(fixture, 'cities', []);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 				await tickAndDetectChanges(fixture);
@@ -2189,8 +2213,8 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should open dropdown with loading message', async () => {
-				fixture.componentInstance.cities = [];
-				fixture.componentInstance.citiesLoading = true;
+				setFixtureInput(fixture, 'cities', []);
+				setFixtureInput(fixture, 'citiesLoading', true);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 				await tickAndDetectChanges(fixture);
@@ -2207,7 +2231,7 @@ describe('NgSelectComponent', () => {
 
 			it('should open dropdown and mark first not disabled item', async () => {
 				fixture.componentInstance.cities[0].disabled = true;
-				fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				const result = { value: fixture.componentInstance.cities[1] };
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
@@ -2215,7 +2239,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should open dropdown without marking first item', async () => {
-				fixture.componentInstance.markFirst = false;
+				setFixtureInput(fixture, 'markFirst', false);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 				expect(select.itemsList.markedItem).toEqual(undefined);
@@ -2235,7 +2259,7 @@ describe('NgSelectComponent', () => {
 
 			it('should stop marked loop if all items disabled', async () => {
 				fixture.componentInstance.cities[0].disabled = true;
-				fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				select.filter('new york');
 				await tickAndDetectChanges(fixture);
@@ -2244,7 +2268,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should select first value on arrow down when current value is last', async () => {
-				fixture.componentInstance.selectedCity = fixture.componentInstance.cities[4];
+				setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[4]);
 				await tickAndDetectChanges(fixture);
 				await selectOption(fixture, KeyCode.ArrowDown, 1);
 				await tickAndDetectChanges(fixture);
@@ -2270,7 +2294,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should select previous value on arrow up', async () => {
-				fixture.componentInstance.selectedCity = fixture.componentInstance.cities[1];
+				setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[1]);
 				await tickAndDetectChanges(fixture);
 				await selectOption(fixture, KeyCode.ArrowUp, 1);
 				await tickAndDetectChanges(fixture);
@@ -2303,7 +2327,7 @@ describe('NgSelectComponent', () => {
 
 		describe('backspace', () => {
 			it('should remove selected value', async () => {
-				fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+				setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Backspace);
 				expect(select.selectedItems).toEqual([]);
@@ -2312,7 +2336,7 @@ describe('NgSelectComponent', () => {
 			it('should not remove selected value if filter is set', async () => {
 				select.filter('a');
 
-				fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+				setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Backspace);
 				const result = [
@@ -2324,8 +2348,8 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should not remove selected value when clearable is false', async () => {
-				fixture.componentInstance.clearable = false;
-				fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+				setFixtureInput(fixture, 'clearable', false);
+				setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Backspace);
 				const result = [
@@ -2346,8 +2370,8 @@ describe('NgSelectComponent', () => {
 			it('should remove last selected value when multiple', async () => {
 				const remove = vi.spyOn(select.removeEvent, 'emit').mockReturnValue(undefined);
 				const removedItem = fixture.componentInstance.cities[2];
-				fixture.componentInstance.multiple = true;
-				fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'multiple', true);
+				setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				await selectOption(fixture, KeyCode.ArrowDown, 1);
 				await selectOption(fixture, KeyCode.ArrowDown, 1);
@@ -2364,12 +2388,12 @@ describe('NgSelectComponent', () => {
 
 			it('should not remove last selected if it is disabled', async () => {
 				const remove = vi.spyOn(select.removeEvent, 'emit').mockReturnValue(undefined);
-				fixture.componentInstance.multiple = true;
+				setFixtureInput(fixture, 'multiple', true);
 				const disabled = { ...fixture.componentInstance.cities[1], disabled: true };
-				fixture.componentInstance.selectedCity = <any>[fixture.componentInstance.cities[0], disabled];
+				setFixtureInput(fixture, 'selectedCity', <any>[fixture.componentInstance.cities[0], disabled]);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.cities[1].disabled = true;
-				fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Backspace);
 				const result = [
@@ -2382,9 +2406,9 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should not remove selected value when clearOnBackspace false', async () => {
-				fixture.componentInstance.multiple = true;
-				fixture.componentInstance.clearOnBackspace = false;
-				fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'multiple', true);
+				setFixtureInput(fixture, 'clearOnBackspace', false);
+				setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				await selectOption(fixture, KeyCode.ArrowDown, 1);
 				await selectOption(fixture, KeyCode.ArrowDown, 1);
@@ -2396,7 +2420,7 @@ describe('NgSelectComponent', () => {
 
 		describe('key presses', () => {
 			beforeEach(async () => {
-				fixture.componentInstance.searchable = false;
+				setFixtureInput(fixture, 'searchable', false);
 				await tickAndDetectChanges(fixture);
 				select.ngOnInit();
 			});
@@ -2425,13 +2449,13 @@ describe('NgSelectComponent', () => {
 
 		describe('enter', () => {
 			beforeEach(async () => {
-				fixture.componentInstance.searchable = false;
+				setFixtureInput(fixture, 'searchable', false);
 				await tickAndDetectChanges(fixture);
 				select.ngOnInit();
 			});
 
 			it('should open dropdown when it is closed', async () => {
-				fixture.componentInstance.openOnEnter = true;
+				setFixtureInput(fixture, 'openOnEnter', true);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Enter);
 				await tickAndDetectChanges(fixture);
@@ -2446,7 +2470,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should not open dropdown if [openOnEnter]="false"', async () => {
-				fixture.componentInstance.openOnEnter = false;
+				setFixtureInput(fixture, 'openOnEnter', false);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Enter);
 				expect(select.isOpen()).toBe(false);
 			});
@@ -2500,7 +2524,7 @@ describe('NgSelectComponent', () => {
 
 		it('should close dropdown when [selectOnTab]="false"', async () => {
 			const { fixture, select } = genericFixture();
-			fixture.componentInstance.selectOnTab = false;
+			setFixtureInput(fixture, 'selectOnTab', false);
 			await tickAndDetectChanges(fixture);
 			triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 			triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Tab);
@@ -2510,7 +2534,7 @@ describe('NgSelectComponent', () => {
 
 		it('should close dropdown and keep selected value', async () => {
 			const { fixture, select } = genericFixture();
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 			triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 			triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Tab);
@@ -2540,7 +2564,7 @@ describe('NgSelectComponent', () => {
 
 		it('should focus on clear button when tab pressed while not opened and clear showing', async () => {
 			const { fixture, select } = genericFixture();
-			fixture.componentInstance.tabFocusOnClearButton = true;
+			setFixtureInput(fixture, 'tabFocusOnClearButton', true);
 			await selectOption(fixture, KeyCode.ArrowDown, 0);
 			await tickAndDetectChanges(fixture);
 			expect(select.showClear()).toBeTruthy();
@@ -2567,7 +2591,7 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 			const select = fixture.componentInstance.select();
-			fixture.componentInstance.tabFocusOnClearButton = false;
+			setFixtureInput(fixture, 'tabFocusOnClearButton', false);
 			await selectOption(fixture, KeyCode.ArrowDown, 0);
 			await tickAndDetectChanges(fixture);
 			expect(select.showClear()).toBeTruthy();
@@ -2594,7 +2618,7 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 			const select = fixture.componentInstance.select();
-			fixture.componentInstance.tabFocusOnClearButton = false;
+			setFixtureInput(fixture, 'tabFocusOnClearButton', false);
 			await selectOption(fixture, KeyCode.ArrowDown, 0);
 			await tickAndDetectChanges(fixture);
 			expect(select.showClear()).toBeTruthy();
@@ -2621,7 +2645,7 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 			const select = fixture.componentInstance.select();
-			fixture.componentInstance.tabFocusOnClearButton = true;
+			setFixtureInput(fixture, 'tabFocusOnClearButton', true);
 			await selectOption(fixture, KeyCode.ArrowDown, 0);
 			await tickAndDetectChanges(fixture);
 			expect(select.showClear()).toBeTruthy();
@@ -2648,7 +2672,7 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 			const select = fixture.componentInstance.select();
-			fixture.componentInstance.tabFocusOnClearButton = true;
+			setFixtureInput(fixture, 'tabFocusOnClearButton', true);
 			await selectOption(fixture, KeyCode.ArrowDown, 0);
 			await tickAndDetectChanges(fixture);
 			expect(select.showClear()).toBeTruthy();
@@ -2754,6 +2778,7 @@ describe('NgSelectComponent', () => {
 			TestBed.resetTestingModule();
 			TestBed.configureTestingModule({
 				providers: [
+					provideZonelessChangeDetection(),
 					{ provide: ErrorHandler, useClass: TestsErrorHandler },
 					{ provide: ConsoleService, useFactory: () => new MockConsole() },
 					{ provide: NgSelectConfig, useValue: { appendTo: 'body' } },
@@ -2783,9 +2808,7 @@ describe('NgSelectComponent', () => {
 
 	describe('Immediate close - DOM removal without external change detection (issue #2765)', () => {
 		// close() uses detectChanges() internally to ensure the dropdown panel is
-		// removed from the DOM immediately, without relying on zone-triggered CD.
-		// This is critical in Angular 21 with provideZoneChangeDetection() where
-		// event coalescing defers zone-triggered change detection.
+		// removed from the DOM immediately, without relying on scheduled CD.
 
 		describe('Outside click', () => {
 			it('should remove dropdown panel from DOM immediately', async () => {
@@ -3023,7 +3046,7 @@ describe('NgSelectComponent', () => {
 	describe('Dropdown position', () => {
 		it('should auto position dropdown to bottom by default', async () => {
 			const fixture = createTestingModule(NgSelectTestComponent, `<ng-select [items]="cities"></ng-select>`);
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York' }];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York' }]);
 			fixture.detectChanges();
 
 			const select = fixture.componentInstance.select();
@@ -3036,7 +3059,7 @@ describe('NgSelectComponent', () => {
 
 		it('should auto position dropdown to top if position input is set', async () => {
 			const fixture = createTestingModule(NgSelectTestComponent, `<ng-select dropdownPosition="top" [items]="cities"></ng-select>`);
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York' }];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York' }]);
 			fixture.detectChanges();
 
 			const select = fixture.componentInstance.select();
@@ -3054,7 +3077,7 @@ describe('NgSelectComponent', () => {
 
 		it('should auto position appended to body dropdown to bottom', async () => {
 			const fixture = createTestingModule(NgSelectTestComponent, `<ng-select [items]="cities" appendTo="body"></ng-select>`);
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York' }];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York' }]);
 			fixture.detectChanges();
 
 			const select = fixture.componentInstance.select();
@@ -3067,7 +3090,7 @@ describe('NgSelectComponent', () => {
 
 		it('should return current panel position', async () => {
 			const fixture = createTestingModule(NgSelectTestComponent, `<ng-select [items]="cities" appendTo="body"></ng-select>`);
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York' }];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York' }]);
 			fixture.detectChanges();
 
 			const select = fixture.componentInstance.select();
@@ -3079,7 +3102,7 @@ describe('NgSelectComponent', () => {
 
 		it('should return undefined for current panel position if dropdown is closed', async () => {
 			const fixture = createTestingModule(NgSelectTestComponent, `<ng-select [items]="cities" appendTo="body"></ng-select>`);
-			fixture.componentInstance.cities = [{ id: 1, name: 'New York' }];
+			setFixtureInput(fixture, 'cities', [{ id: 1, name: 'New York' }]);
 			fixture.detectChanges();
 
 			const select = fixture.componentInstance.select();
@@ -3103,7 +3126,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 
@@ -3143,7 +3166,7 @@ describe('NgSelectComponent', () => {
 			fixture.detectChanges();
 			expect(fixture.componentInstance.select().selectedItems.length).toBe(1);
 			const selected = fixture.componentInstance.selectedCity;
-			fixture.componentInstance.cities = [];
+			setFixtureInput(fixture, 'cities', []);
 			fixture.detectChanges();
 
 			fixture.componentInstance.select().clearItem(selected);
@@ -3179,7 +3202,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[0]];
+			setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[0]]);
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 
@@ -3252,15 +3275,15 @@ describe('NgSelectComponent', () => {
 			);
 
 			await fixture.whenStable();
-			fixture.componentInstance.cities = [];
-			fixture.componentInstance.citiesLoading = true;
+			setFixtureInput(fixture, 'cities', []);
+			setFixtureInput(fixture, 'citiesLoading', true);
 			await tickAndDetectChanges(fixture);
 			triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 			await tickAndDetectChanges(fixture);
 			const loadingOption = fixture.debugElement.queryAll(By.css('.custom-loading'));
 			expect(loadingOption.length).toBe(1);
 
-			fixture.componentInstance.citiesLoading = false;
+			setFixtureInput(fixture, 'citiesLoading', false);
 			await tickAndDetectChanges(fixture);
 			triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 			await tickAndDetectChanges(fixture);
@@ -3284,7 +3307,7 @@ describe('NgSelectComponent', () => {
 			);
 
 			await fixture.whenStable();
-			fixture.componentInstance.cities = [];
+			setFixtureInput(fixture, 'cities', []);
 			fixture.componentInstance.select().open();
 			fixture.componentInstance.filter.subscribe();
 			await tickAndDetectChanges(fixture);
@@ -3327,7 +3350,7 @@ describe('NgSelectComponent', () => {
 			await tickAndDetectChanges(fixture);
 			const itemsList = fixture.componentInstance.select().itemsList;
 			expect(itemsList.items[0].disabled).toBeFalsy();
-			fixture.componentInstance.disabled = true;
+			setFixtureInput(fixture, 'disabled', true);
 			await tickAndDetectChanges(fixture);
 			expect(itemsList.items[0].disabled).toBeTruthy();
 		});
@@ -3348,7 +3371,7 @@ describe('NgSelectComponent', () => {
 			);
 
 			await fixture.whenStable();
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 			const clear = fixture.debugElement.queryAll(By.css('.custom-clearbutton'));
@@ -3371,7 +3394,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0].name;
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0].name);
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 
@@ -3400,7 +3423,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = undefined;
+			setFixtureInput(fixture, 'selectedCity', undefined);
 			await tickAndDetectChanges(fixture);
 			expect(fixture.debugElement.query(By.css('.placeholder-template')).nativeElement.innerHTML).toBe('Select your city');
 			expect(fixture.debugElement.query(By.css('.ng-placeholder'))).toBeFalsy();
@@ -3416,7 +3439,7 @@ describe('NgSelectComponent', () => {
                   </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 
@@ -3433,7 +3456,7 @@ describe('NgSelectComponent', () => {
                   </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 
@@ -3449,7 +3472,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.label = 'Indeed';
+			setFixtureInput(fixture, 'label', 'Indeed');
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 			const items = fixture.componentInstance.select().itemsList.items;
@@ -3465,7 +3488,7 @@ describe('NgSelectComponent', () => {
 				</ng-select>`,
 			);
 
-			fixture.componentInstance.label = '';
+			setFixtureInput(fixture, 'label', '');
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 
@@ -3473,7 +3496,7 @@ describe('NgSelectComponent', () => {
 			expect(items[0].label).toBe('');
 
 			// Simulate delayed async update (e.g., translation loaded later or signal update)
-			fixture.componentInstance.label = 'worked';
+			setFixtureInput(fixture, 'label', 'worked');
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 
@@ -3491,8 +3514,8 @@ describe('NgSelectComponent', () => {
 			);
 
 			// Start with initial value
-			fixture.componentInstance.cityValue = 'initial';
-			fixture.componentInstance.label = 'Initial Label';
+			setFixtureInput(fixture, 'cityValue', 'initial');
+			setFixtureInput(fixture, 'label', 'Initial Label');
 			fixture.detectChanges();
 			await fixture.whenStable(); // Flush pending effects
 
@@ -3501,8 +3524,8 @@ describe('NgSelectComponent', () => {
 			expect(items[0].label).toBe('Initial Label');
 
 			// Simulate delayed async update of value attribute
-			fixture.componentInstance.cityValue = 'updated';
-			fixture.componentInstance.label = 'Updated Label';
+			setFixtureInput(fixture, 'cityValue', 'updated');
+			setFixtureInput(fixture, 'label', 'Updated Label');
 			fixture.detectChanges();
 			await fixture.whenStable(); // Flush pending effects
 
@@ -3572,7 +3595,7 @@ describe('NgSelectComponent', () => {
 		describe('max selected items', () => {
 			let arrowIcon: DebugElement = null;
 			beforeEach(() => {
-				fixture.componentInstance.maxSelectedItems = 2;
+				setFixtureInput(fixture, 'maxSelectedItems', 2);
 				arrowIcon = fixture.debugElement.query(By.css('.ng-arrow-wrapper'));
 			});
 
@@ -3599,8 +3622,8 @@ describe('NgSelectComponent', () => {
 		describe('show selected', () => {
 			beforeEach(() => {
 				select = fixture.componentInstance.select();
-				fixture.componentInstance.hideSelected = true;
-				fixture.componentInstance.closeOnSelect = false;
+				setFixtureInput(fixture, 'hideSelected', true);
+				setFixtureInput(fixture, 'closeOnSelect', false);
 			});
 
 			it('should close dropdown when all items are selected', async () => {
@@ -3615,7 +3638,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should not open dropdown when all items are selected', async () => {
-				fixture.componentInstance.selectedCities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'selectedCities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 				expect(select.selectedItems.length).toBe(5);
@@ -3624,19 +3647,19 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should open dropdown when all items are selected and tagging is enabled', async () => {
-				fixture.componentInstance.addTag = true;
-				fixture.componentInstance.cities = [];
+				setFixtureInput(fixture, 'addTag', true);
+				setFixtureInput(fixture, 'cities', []);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 				expect(select.isOpen()).toBeTruthy();
 			});
 
 			it('should not insert option back to list if it is newly created option', async () => {
-				fixture.componentInstance.addTag = true;
-				fixture.componentInstance.typeahead = new Subject();
+				setFixtureInput(fixture, 'addTag', true);
+				setFixtureInput(fixture, 'typeahead', new Subject());
 				await tickAndDetectChanges(fixture);
 				select.typeahead().subscribe();
-				fixture.componentInstance.cities = [];
+				setFixtureInput(fixture, 'cities', []);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.select().filter('New item');
 				await tickAndDetectChanges(fixture);
@@ -3650,14 +3673,14 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should remove selected item from items list', async () => {
-				fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[0]];
+				setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[0]]);
 				await tickAndDetectChanges(fixture);
 				expect(select.selectedItems.length).toBe(1);
 				expect(select.itemsList.filteredItems.length).toBe(4);
 			});
 
 			it('should put unselected item back to list', async () => {
-				fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[0]];
+				setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[0]]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Space);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Backspace);
@@ -3666,7 +3689,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should keep same ordering while unselecting', async () => {
-				fixture.componentInstance.selectedCities = [...fixture.componentInstance.cities.reverse()];
+				setFixtureInput(fixture, 'selectedCities', [...fixture.componentInstance.cities.reverse()]);
 				await tickAndDetectChanges(fixture);
 				select.unselect(select.selectedItems[0]);
 				select.unselect(select.selectedItems[0]);
@@ -3681,7 +3704,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should reset list while clearing all selected items', async () => {
-				fixture.componentInstance.selectedCities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'selectedCities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				select.handleClearClick();
 				expect(select.selectedItems.length).toBe(0);
@@ -3689,7 +3712,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should skip selected items while filtering', async () => {
-				fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[0]];
+				setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[0]]);
 				await tickAndDetectChanges(fixture);
 				select.filter('lon');
 				await tickAndDetectChanges(fixture);
@@ -4027,7 +4050,7 @@ describe('NgSelectComponent', () => {
 
 			it('should be false when term is too short', () => {
 				select.filter('vi');
-				fixture.componentInstance.minTermLength = 3;
+				setFixtureInput(fixture, 'minTermLength', 3);
 				fixture.detectChanges();
 				expect(select.showAddTag).toBeFalsy();
 			});
@@ -4043,19 +4066,19 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should be false when term exists among selected items', async () => {
-				fixture.componentInstance.hideSelected = true;
+				setFixtureInput(fixture, 'hideSelected', true);
 				select.filter('Palanga');
 				await tickAndDetectChanges(fixture);
-				fixture.componentInstance.selectedCities = [{ name: 'Palanga', id: 9 }];
+				setFixtureInput(fixture, 'selectedCities', [{ name: 'Palanga', id: 9 }]);
 				await tickAndDetectChanges(fixture);
 				expect(select.showAddTag).toBeFalsy();
 			});
 
 			it('should be false when term exists among selected items and select is closed', async () => {
-				fixture.componentInstance.hideSelected = false;
+				setFixtureInput(fixture, 'hideSelected', false);
 				select.filter('Palanga');
 				await tickAndDetectChanges(fixture);
-				fixture.componentInstance.selectedCities = [{ name: 'Palanga', id: 9 }];
+				setFixtureInput(fixture, 'selectedCities', [{ name: 'Palanga', id: 9 }]);
 				select.isOpen.set(false);
 				await tickAndDetectChanges(fixture);
 				expect(select.showAddTag).toBeFalsy();
@@ -4091,7 +4114,7 @@ describe('NgSelectComponent', () => {
 
 		it('should be visible when value was cleared', async () => {
 			const select = fixture.componentInstance.select();
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			await tickAndDetectChanges(fixture);
 			await tickAndDetectChanges(fixture);
 			const element = fixture.componentInstance.select().element;
@@ -4158,7 +4181,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.searchFn = (term: string, item: any) => item.name.indexOf(term) > -1 || item.id === 2;
+			setFixtureInput(fixture, 'searchFn', (term: string, item: any) => item.name.indexOf(term) > -1 || item.id === 2);
 			const select = fixture.componentInstance.select();
 			await tickAndDetectChanges(fixture);
 			select.filter('New York');
@@ -4267,7 +4290,7 @@ describe('NgSelectComponent', () => {
                 </ng-select>`,
 			);
 
-			fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+			setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 			fixture.detectChanges();
 			fixture.componentInstance.select().filter('bei');
 			await fixture.whenStable();
@@ -4375,7 +4398,7 @@ describe('NgSelectComponent', () => {
 			];
 			expect(fixture.componentInstance.select().itemsList.filteredItems).toEqual(result);
 
-			fixture.componentInstance.cities = [
+			setFixtureInput(fixture, 'cities', [
 				{ id: 1, name: 'New York' },
 				{ id: 2, name: 'London' },
 				{
@@ -4383,7 +4406,7 @@ describe('NgSelectComponent', () => {
 					name: 'Beijing',
 				},
 				{ id: 4, name: 'New Delhi' },
-			];
+			]);
 			await tickAndDetectChanges(fixture);
 
 			fixture.componentInstance.select().filter('new');
@@ -4417,12 +4440,12 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should not show selected city among options if it does not match search term', async () => {
-				fixture.componentInstance.selectedCity = { id: 9, name: 'Copenhagen' };
+				setFixtureInput(fixture, 'selectedCity', { id: 9, name: 'Copenhagen' });
 				await tickAndDetectChanges(fixture);
 
 				fixture.componentInstance.filter.subscribe();
 				fixture.componentInstance.select().filter('new');
-				fixture.componentInstance.cities = [{ id: 4, name: 'New York' }];
+				setFixtureInput(fixture, 'cities', [{ id: 4, name: 'New York' }]);
 				await tickAndDetectChanges(fixture);
 				expect(fixture.componentInstance.select().itemsList.filteredItems.length).toBe(1);
 				expect(fixture.componentInstance.select().itemsList.filteredItems[0]).toEqual(
@@ -4449,7 +4472,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should not push term to custom observable if length is less than minTermLength', async () => {
-				fixture.componentInstance.minTermLength = 2;
+				setFixtureInput(fixture, 'minTermLength', 2);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.filter.subscribe();
 				const next = vi.spyOn(fixture.componentInstance.filter, 'next').mockReturnValue(undefined);
@@ -4461,7 +4484,7 @@ describe('NgSelectComponent', () => {
 			it('should mark first item when typeahead results are loaded', async () => {
 				fixture.componentInstance.filter.subscribe();
 				fixture.componentInstance.select().filter('buk');
-				fixture.componentInstance.cities = [{ id: 4, name: 'Bukiskes' }];
+				setFixtureInput(fixture, 'cities', [{ id: 4, name: 'Bukiskes' }]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Enter);
 				expect(fixture.componentInstance.select().selectedItems).toEqual([
@@ -4472,20 +4495,20 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should not mark first item when typeahead results are loaded', async () => {
-				fixture.componentInstance.markFirst = false;
+				setFixtureInput(fixture, 'markFirst', false);
 				fixture.detectChanges();
 				fixture.componentInstance.filter.subscribe();
 				fixture.componentInstance.select().filter('buk');
-				fixture.componentInstance.cities = [{ id: 4, name: 'Bukiskes' }];
+				setFixtureInput(fixture, 'cities', [{ id: 4, name: 'Bukiskes' }]);
 				await tickAndDetectChanges(fixture);
 				triggerKeyDownEvent(getNgSelectElement(fixture), KeyCode.Enter);
 				expect(fixture.componentInstance.select().selectedItems).toEqual([]);
 			});
 
 			it('should open dropdown when hideSelected=true and no items to select', async () => {
-				fixture.componentInstance.hideSelected = true;
-				fixture.componentInstance.cities = [];
-				fixture.componentInstance.selectedCity = null;
+				setFixtureInput(fixture, 'hideSelected', true);
+				setFixtureInput(fixture, 'cities', []);
+				setFixtureInput(fixture, 'selectedCity', null);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.filter.subscribe();
 				fixture.componentInstance.select().open();
@@ -4494,8 +4517,8 @@ describe('NgSelectComponent', () => {
 
 			describe('search text', () => {
 				it('should be visible until minTermLength reached', async () => {
-					fixture.componentInstance.cities = [];
-					fixture.componentInstance.minTermLength = 3;
+					setFixtureInput(fixture, 'cities', []);
+					setFixtureInput(fixture, 'minTermLength', 3);
 					fixture.componentInstance.filter.subscribe();
 					fixture.componentInstance.select().filter('vi');
 					await tickAndDetectChanges(fixture);
@@ -4503,8 +4526,8 @@ describe('NgSelectComponent', () => {
 				});
 
 				it('should not be visible when valid search term is present', async () => {
-					fixture.componentInstance.cities = [];
-					fixture.componentInstance.minTermLength = 0;
+					setFixtureInput(fixture, 'cities', []);
+					setFixtureInput(fixture, 'minTermLength', 0);
 					fixture.componentInstance.filter.subscribe();
 					fixture.componentInstance.select().filter('v');
 					await tickAndDetectChanges(fixture);
@@ -4528,7 +4551,7 @@ describe('NgSelectComponent', () => {
 				expect(fixture.componentInstance.select().clearSearchOnAddValue()).toBeTruthy();
 
 				fixture.componentInstance.filter.subscribe();
-				fixture.componentInstance.cities = [{ id: 4, name: 'New York' }];
+				setFixtureInput(fixture, 'cities', [{ id: 4, name: 'New York' }]);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.select().filter('new');
 				expect(fixture.componentInstance.select().itemsList.filteredItems.length).toBe(1);
@@ -4554,7 +4577,7 @@ describe('NgSelectComponent', () => {
 				expect(fixture.componentInstance.select().clearSearchOnAddValue()).toBeFalsy();
 
 				fixture.componentInstance.filter.subscribe();
-				fixture.componentInstance.cities = [{ id: 4, name: 'New York' }];
+				setFixtureInput(fixture, 'cities', [{ id: 4, name: 'New York' }]);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.select().filter('new');
 
@@ -4583,10 +4606,10 @@ describe('NgSelectComponent', () => {
 				fixture.componentInstance.filter.subscribe();
 				const select = fixture.componentInstance.select();
 				select.filter('new');
-				fixture.componentInstance.cities = [
+				setFixtureInput(fixture, 'cities', [
 					{ id: 4, name: 'New York' },
 					{ id: 5, name: 'California' },
-				];
+				]);
 				await tickAndDetectChanges(fixture);
 				select.select(select.viewPortItems[0]);
 				expect(select.searchTerm).toBe('new');
@@ -4612,10 +4635,10 @@ describe('NgSelectComponent', () => {
 				fixture.componentInstance.filter.subscribe((value) => {
 					lastEmittedSearchTerm = value;
 				});
-				fixture.componentInstance.cities = [
+				setFixtureInput(fixture, 'cities', [
 					{ id: 4, name: 'New York' },
 					{ id: 5, name: 'California' },
-				];
+				]);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.select().filter('new');
 				expect(lastEmittedSearchTerm).toBe('new');
@@ -4642,7 +4665,7 @@ describe('NgSelectComponent', () => {
 
 				fixture.componentInstance.filter.subscribe();
 				fixture.componentInstance.select().filter('new');
-				fixture.componentInstance.cities = [{ id: 4, name: 'New York' }];
+				setFixtureInput(fixture, 'cities', [{ id: 4, name: 'New York' }]);
 				await tickAndDetectChanges(fixture);
 
 				const select = fixture.componentInstance.select();
@@ -4672,7 +4695,7 @@ describe('NgSelectComponent', () => {
 				fixture.componentInstance.filter.subscribe();
 				const select = fixture.componentInstance.select();
 				select.filter('new');
-				fixture.componentInstance.cities = [{ id: 4, name: 'New York' }];
+				setFixtureInput(fixture, 'cities', [{ id: 4, name: 'New York' }]);
 				await tickAndDetectChanges(fixture);
 
 				select.select(select.viewPortItems[0]);
@@ -4697,7 +4720,7 @@ describe('NgSelectComponent', () => {
 				const select = fixture.componentInstance.select();
 				const input = select.searchInput().nativeElement;
 				const selectedCity = fixture.componentInstance.cities[0];
-				fixture.componentInstance.selectedCity = selectedCity.id;
+				setFixtureInput(fixture, 'selectedCity', selectedCity.id);
 				await tickAndDetectChanges(fixture);
 				input.focus();
 				await advanceDebounce(fixture, 2000);
@@ -4723,7 +4746,7 @@ describe('NgSelectComponent', () => {
 				const selectedCity = fixture.componentInstance.cities[0];
 				const wrongSearchTerm = 'some wrong search';
 				const selectConfig = new NgSelectConfig();
-				fixture.componentInstance.selectedCity = selectedCity.id;
+				setFixtureInput(fixture, 'selectedCity', selectedCity.id);
 				await tickAndDetectChanges(fixture);
 				input.focus();
 				input.value = wrongSearchTerm;
@@ -4758,7 +4781,7 @@ describe('NgSelectComponent', () => {
 				const selectedCity = fixture.componentInstance.cities[0];
 
 				// Update value programmatically through the value model.
-				fixture.componentInstance.selectedCity = selectedCity.id;
+				setFixtureInput(fixture, 'selectedCity', selectedCity.id);
 				await tickAndDetectChanges(fixture);
 
 				// The search term should be updated to match the selected item's label
@@ -4943,7 +4966,7 @@ describe('NgSelectComponent', () => {
 
 			vi.spyOn(fixture.componentInstance, 'onChange').mockReturnValue(undefined);
 
-			fixture.componentInstance.selectedCityId = fixture.componentInstance.cities[1].id;
+			setFixtureInput(fixture, 'selectedCityId', fixture.componentInstance.cities[1].id);
 			await tickAndDetectChanges(fixture);
 
 			const select = fixture.componentInstance.select();
@@ -5021,7 +5044,7 @@ describe('NgSelectComponent', () => {
 
 			vi.spyOn(fixture.componentInstance, 'onRemove').mockReturnValue(undefined);
 
-			fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[0]];
+			setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[0]]);
 			await tickAndDetectChanges(fixture);
 
 			fixture.componentInstance.select().unselect(fixture.componentInstance.cities[0]);
@@ -5041,7 +5064,7 @@ describe('NgSelectComponent', () => {
 
 			vi.spyOn(fixture.componentInstance, 'onClear').mockReturnValue(undefined);
 
-			fixture.componentInstance.selectedCities = [fixture.componentInstance.cities[0]];
+			setFixtureInput(fixture, 'selectedCities', [fixture.componentInstance.cities[0]]);
 			await tickAndDetectChanges(fixture);
 			fixture.componentInstance.select().handleClearClick();
 			await tickAndDetectChanges(fixture);
@@ -5102,7 +5125,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('shouldnt focus dropdown, because prevent flag is true for right mouse click', async () => {
-				fixture.componentInstance.preventToggleOnRightClick = true;
+				setFixtureInput(fixture, 'preventToggleOnRightClick', true);
 				const event = createEvent({ tagName: 'INPUT' }) as any;
 				const preventDefault = vi.spyOn(event, 'preventDefault').mockReturnValue(undefined);
 				triggerMousedown();
@@ -5156,10 +5179,10 @@ describe('NgSelectComponent', () => {
 
 				vi.spyOn(fixture.componentInstance, 'onChange').mockReturnValue(undefined);
 				const disabled = { ...fixture.componentInstance.cities[1], disabled: true };
-				fixture.componentInstance.selectedCities = <any>[fixture.componentInstance.cities[0], disabled];
+				setFixtureInput(fixture, 'selectedCities', <any>[fixture.componentInstance.cities[0], disabled]);
 				await tickAndDetectChanges(fixture);
 				fixture.componentInstance.cities[1].disabled = true;
-				fixture.componentInstance.cities = [...fixture.componentInstance.cities];
+				setFixtureInput(fixture, 'cities', [...fixture.componentInstance.cities]);
 				await tickAndDetectChanges(fixture);
 				triggerMousedown = () => {
 					const clearButton = fixture.debugElement.query(By.css('.ng-clear-wrapper'));
@@ -5181,7 +5204,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('should clear model including disabled when clearKeepsDisabledOptions is disabled', async () => {
-				fixture.componentInstance.clearKeepsDisabledOptions = false;
+				setFixtureInput(fixture, 'clearKeepsDisabledOptions', false);
 				await tickAndDetectChanges(fixture);
 				triggerMousedown();
 				await tickAndDetectChanges(fixture);
@@ -5191,7 +5214,7 @@ describe('NgSelectComponent', () => {
 
 			it('should clear only search text', async () => {
 				const select = fixture.componentInstance.select();
-				fixture.componentInstance.selectedCities = null;
+				setFixtureInput(fixture, 'selectedCities', null);
 				await tickAndDetectChanges(fixture);
 				select.filter('Hey! Whats up!?');
 				await tickAndDetectChanges(fixture);
@@ -5221,7 +5244,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('clear button should not appear if select is disabled', async () => {
-				fixture.componentInstance.disabled = true;
+				setFixtureInput(fixture, 'disabled', true);
 				await tickAndDetectChanges(fixture);
 				await tickAndDetectChanges(fixture);
 				const el = fixture.debugElement.query(By.css('.ng-clear-wrapper'));
@@ -5229,7 +5252,7 @@ describe('NgSelectComponent', () => {
 			});
 
 			it('clear button should not appear if select is readonly', async () => {
-				fixture.componentInstance.readonly = true;
+				setFixtureInput(fixture, 'readonly', true);
 				await tickAndDetectChanges(fixture);
 				await tickAndDetectChanges(fixture);
 				const el = fixture.debugElement.query(By.css('.ng-clear-wrapper'));
@@ -5249,7 +5272,7 @@ describe('NgSelectComponent', () => {
 				);
 				select = fixture.componentInstance.select();
 
-				fixture.componentInstance.selectedCities = fixture.componentInstance.cities[0];
+				setFixtureInput(fixture, 'selectedCities', fixture.componentInstance.cities[0]);
 				await tickAndDetectChanges(fixture);
 				await tickAndDetectChanges(fixture);
 				triggerMousedown = () => {
@@ -5287,7 +5310,7 @@ describe('NgSelectComponent', () => {
                     </ng-select>`,
 				);
 
-				fixture.componentInstance.selectedCity = fixture.componentInstance.cities[0];
+				setFixtureInput(fixture, 'selectedCity', fixture.componentInstance.cities[0]);
 				await tickAndDetectChanges(fixture);
 				triggerMousedown = () => {
 					const control = fixture.debugElement.query(By.css('.ng-select-container'));
@@ -5453,7 +5476,7 @@ describe('NgSelectComponent', () => {
 				config,
 			);
 
-			fixture.componentInstance.visible = true;
+			setFixtureInput(fixture, 'visible', true);
 			fixture.componentInstance.select().open();
 			fixture.detectChanges();
 
@@ -5461,7 +5484,7 @@ describe('NgSelectComponent', () => {
 			const dropdown = <HTMLElement>document.querySelector('.container .ng-dropdown-panel');
 			expect(dropdown.classList.contains('someClass')).toBe(true);
 
-			fixture.componentInstance.visible = false;
+			setFixtureInput(fixture, 'visible', false);
 			fixture.detectChanges();
 
 			expect(dropdown.classList.contains('someClass')).toBe(false);
@@ -5505,7 +5528,7 @@ describe('NgSelectComponent', () => {
 			config,
 		);
 
-		fixture.componentInstance.visible = true;
+		setFixtureInput(fixture, 'visible', true);
 		fixture.componentInstance.select().open();
 		fixture.detectChanges();
 
@@ -5513,7 +5536,7 @@ describe('NgSelectComponent', () => {
 		const dropdown = <HTMLElement>document.querySelector('.container .ng-dropdown-panel');
 		expect(dropdown.classList.contains('someClass')).toBe(true);
 
-		fixture.componentInstance.visible = false;
+		setFixtureInput(fixture, 'visible', false);
 		fixture.detectChanges();
 
 		expect(dropdown.classList.contains('someClass')).toBe(false);
@@ -5610,7 +5633,7 @@ describe('Grouping', () => {
 				country: '',
 			},
 		);
-		fixture.componentInstance.accounts = [...fixture.componentInstance.accounts];
+		setFixtureInput(fixture, 'accounts', [...fixture.componentInstance.accounts]);
 		await tickAndDetectChanges(fixture);
 
 		const items: NgOption[] = fixture.componentInstance.select().itemsList.items;
@@ -5840,7 +5863,7 @@ describe('Input method composition', () => {
                 </ng-select>`,
 		);
 		select = fixture.componentInstance.select();
-		fixture.componentInstance.searchWhileComposing = false;
+		setFixtureInput(fixture, 'searchWhileComposing', false);
 	});
 
 	describe('composition start', () => {
@@ -5878,7 +5901,7 @@ describe('Input method composition', () => {
 		});
 
 		it('should update search term when searchWhileComposing', async () => {
-			fixture.componentInstance.searchWhileComposing = true;
+			setFixtureInput(fixture, 'searchWhileComposing', true);
 			select.onCompositionStart();
 			select.onCompositionEnd(imeInputValue);
 			select.filter('new term');
@@ -5907,14 +5930,14 @@ describe('User defined keyDown handler', () => {
 
 	it('should execute user function if any of defined keys was pressed', async () => {
 		const spy = vi.fn();
-		fixture.componentInstance.keyDownFn = spy;
+		setFixtureInput(fixture, 'keyDownFn', spy);
 		await tickAndDetectChanges(fixture);
 
 		expectSpyToBeCalledAfterKeyDown(spy, Object.keys(KeyCode).length);
 	});
 
 	it('should not call any of default keyDown handlers if user handler returns false', async () => {
-		fixture.componentInstance.keyDownFn = () => false;
+		setFixtureInput(fixture, 'keyDownFn', () => false);
 		await tickAndDetectChanges(fixture);
 		const spy = vi.spyOn(fixture.componentInstance.select(), 'handleKeyCode').mockReturnValue(undefined);
 
@@ -5922,7 +5945,7 @@ describe('User defined keyDown handler', () => {
 	});
 
 	it('should call default keyHandler if user handler returns truthy', async () => {
-		fixture.componentInstance.keyDownFn = () => true;
+		setFixtureInput(fixture, 'keyDownFn', () => true);
 		await tickAndDetectChanges(fixture);
 
 		const spy = vi.spyOn(fixture.componentInstance.select(), 'handleKeyCode').mockReturnValue(undefined);
@@ -5930,7 +5953,7 @@ describe('User defined keyDown handler', () => {
 	});
 
 	it('should call default keyHandler if user handler returns falsy but not `false`', async () => {
-		fixture.componentInstance.keyDownFn = () => null;
+		setFixtureInput(fixture, 'keyDownFn', () => null);
 		await tickAndDetectChanges(fixture);
 
 		const spy = vi.spyOn(fixture.componentInstance.select(), 'handleKeyCode').mockReturnValue(undefined);
@@ -5940,7 +5963,12 @@ describe('User defined keyDown handler', () => {
 
 function createTestingModule<T>(cmp: Type<T>, template: string, customNgSelectConfig: NgSelectConfig | null = null): ComponentFixture<T> {
 	TestBed.configureTestingModule({
-		providers: [{ provide: ErrorHandler, useClass: TestsErrorHandler }, { provide: ConsoleService, useFactory: () => new MockConsole() }, ...provideNgSelect()],
+		providers: [
+			provideZonelessChangeDetection(),
+			{ provide: ErrorHandler, useClass: TestsErrorHandler },
+			{ provide: ConsoleService, useFactory: () => new MockConsole() },
+			...provideNgSelect(),
+		],
 	}).overrideComponent(cmp, {
 		set: {
 			template,
@@ -5974,6 +6002,10 @@ function createTestingModule<T>(cmp: Type<T>, template: string, customNgSelectCo
 	return fixture;
 }
 
+function setFixtureInput<T>(fixture: ComponentFixture<T>, name: string, value: unknown): void {
+	fixture.componentRef.setInput(name, value);
+}
+
 function createEvent(target = {}) {
 	return {
 		preventDefault: () => {},
@@ -5994,49 +6026,81 @@ function createEvent(target = {}) {
 })
 class NgSelectTestComponent {
 	readonly select = viewChild(NgSelectComponent);
+	@Input()
 	multiple = false;
+	@Input()
 	label = 'Yes';
+	@Input()
 	clearOnBackspace = true;
+	@Input()
 	disabled = false;
+	@Input()
 	readonly = false;
 	dropdownPosition = 'bottom';
+	@Input()
 	visible = true;
+	@Input()
 	minTermLength = 0;
 	filter = new Subject<string>();
+	@Input()
 	searchFn: (term: string, item: any) => boolean = null;
+	@Input()
 	selectOnTab = true;
+	@Input()
 	tabFocusOnClearButton: boolean;
+	@Input()
 	hideSelected = false;
+	@Input()
 	closeOnSelect = true;
+	@Input()
 	clearable = true;
+	@Input()
 	clearKeepsDisabledOptions = true;
+	@Input()
 	markFirst = true;
+	@Input()
 	searchable = true;
+	@Input()
 	openOnEnter = undefined;
+	@Input()
 	maxSelectedItems = undefined;
+	@Input()
 	addTag: boolean | AddTagFn = false;
+	@Input()
 	typeahead = undefined;
+	@Input()
 	preventToggleOnRightClick = false;
+	@Input()
 	searchWhileComposing = true;
+	@Input()
 	popoverEnabled = false;
+	@Input()
 	inputAttrs = { 'aria-invalid': 'false' };
 
+	@Input()
 	citiesLoading = false;
+	@Input()
 	selectedCityId: number;
+	@Input()
 	selectedCityIds: number[];
+	@Input()
 	selectedCity: {
 		id: number;
 		name: string;
 	};
+	@Input()
 	selectedCities: {
 		id: number;
 		name: string;
 	}[];
+	@Input()
 	city: {
 		id: number;
 		name: string;
 	};
+	@Input()
 	cityValue: any;
+	@Input()
 	cities: any[] = [
 		{ id: 1, name: 'New York' },
 		{ id: 2, name: 'London' },
@@ -6056,8 +6120,11 @@ class NgSelectTestComponent {
 	] as const;
 	citiesNames = this.cities.map((x) => x.name);
 
+	@Input()
 	selectedCountry: any;
+	@Input()
 	itemsWithNestedBindValue: any[] = [];
+	@Input()
 	nestedSelectedItem: any;
 	countries = [
 		{ id: 1, description: { name: 'Lithuania', id: 'a' } },
@@ -6067,6 +6134,7 @@ class NgSelectTestComponent {
 		},
 		{ id: 3, description: { name: 'Australia', id: 'c' } },
 	];
+	@Input()
 	keyDownFn = () => {};
 
 	tagFunc(term: string) {
@@ -6081,9 +6149,10 @@ class NgSelectTestComponent {
 		});
 	}
 
-	compareWith(a, b) {
+	@Input()
+	compareWith = (a, b) => {
 		return a.name === b.name && a.district === b.district;
-	}
+	};
 
 	toggleVisible() {
 		this.visible = !this.visible;
@@ -6129,6 +6198,7 @@ class NgSelectGroupingTestComponent {
 	readonly select = viewChild(NgSelectComponent);
 	selectedAccountName = 'Adam';
 	selectedAccount = null;
+	@Input()
 	accounts = [
 		{
 			name: 'Adam',
