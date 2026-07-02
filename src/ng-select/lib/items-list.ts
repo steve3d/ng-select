@@ -238,7 +238,7 @@ export class ItemsList {
 		const value = hasNgOptionValue ? item.$ngOptionValue : item;
 		return {
 			index,
-			label: isDefined(label) ? label.toString() : '',
+			label: label?.toString() ?? '',
 			value,
 			disabled: item && item.disabled ? item.disabled : false,
 			classes: hasNgOptionClasses ? item.$ngOptionClasses : '',
@@ -355,7 +355,7 @@ export class ItemsList {
 		const isFnKey = isFunction(this._ngSelect.groupBy());
 		const keyFn = (item: NgOption) => {
 			const key = isFnKey ? (<(value: any) => any>prop)(item.value) : item.value?.[<string>prop];
-			return isDefined(key) ? key : undefined;
+			return key ?? undefined;
 		};
 
 		// Group items by key.

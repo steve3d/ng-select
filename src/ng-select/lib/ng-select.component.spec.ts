@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component, DebugElement, ErrorHandler, Type, viewChild, ViewEncapsulation } from '@angular/core';
-import { SIGNAL } from '@angular/core/primitives/signals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -197,20 +196,6 @@ describe('NgSelectComponent', () => {
 			expect(input.getAttribute('aria-invalid')).toBe('false');
 
 			fixture.componentInstance.inputAttrs = { 'aria-invalid': 'true' };
-			await tickAndDetectChanges(fixture);
-
-			expect(input.getAttribute('aria-invalid')).toBe('true');
-		});
-
-		it('should update search input attributes when inputAttrs signal is set programmatically', async () => {
-			const fixture = createTestingModule(NgSelectTestComponent, `<ng-select [items]="cities" [inputAttrs]="inputAttrs"></ng-select>`);
-
-			await tickAndDetectChanges(fixture);
-
-			const select = fixture.componentInstance.select();
-			const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
-
-			select.inputAttrs.set({ 'aria-invalid': 'true' });
 			await tickAndDetectChanges(fixture);
 
 			expect(input.getAttribute('aria-invalid')).toBe('true');
@@ -2080,7 +2065,7 @@ describe('NgSelectComponent', () => {
 						constructor(cb: () => void) {
 							observerCallback = cb;
 						}
-						observe() { }
+						observe() {}
 						disconnect = disconnectSpy;
 					};
 				});
@@ -5921,8 +5906,10 @@ describe('User defined keyDown handler', () => {
 		expect(spy).toHaveBeenCalledTimes(expectedNumber);
 	};
 
-	it('should execute user function if any of defined keys was pressed', () => {
-		const spy = vi.spyOn(fixture.componentInstance.select()._keyDownFn[SIGNAL], 'value').mockReturnValue(undefined);
+	it('should execute user function if any of defined keys was pressed', async () => {
+		const spy = vi.fn();
+		fixture.componentInstance.keyDownFn = spy;
+		await tickAndDetectChanges(fixture);
 
 		expectSpyToBeCalledAfterKeyDown(spy, Object.keys(KeyCode).length);
 	});
@@ -5991,12 +5978,12 @@ function createTestingModule<T>(cmp: Type<T>, template: string, customNgSelectCo
 
 function createEvent(target = {}) {
 	return {
-		preventDefault: () => { },
+		preventDefault: () => {},
 		target: {
 			className: '',
 			tagName: '',
 			classList: {
-				contains: () => { },
+				contains: () => {},
 			},
 			...target,
 		},
@@ -6083,7 +6070,7 @@ class NgSelectTestComponent {
 		},
 		{ id: 3, description: { name: 'Australia', id: 'c' } },
 	];
-	keyDownFn = () => { };
+	keyDownFn = () => {};
 
 	tagFunc(term: string) {
 		return { id: term, name: term, custom: true };
@@ -6105,27 +6092,27 @@ class NgSelectTestComponent {
 		this.visible = !this.visible;
 	}
 
-	onChange(_: any) { }
+	onChange(_: any) {}
 
-	onFocus(_: Event) { }
+	onFocus(_: Event) {}
 
-	onBlur(_: Event) { }
+	onBlur(_: Event) {}
 
-	onOpen() { }
+	onOpen() {}
 
-	onClose() { }
+	onClose() {}
 
-	onAdd(_: Event) { }
+	onAdd(_: Event) {}
 
-	onRemove(_: Event) { }
+	onRemove(_: Event) {}
 
-	onClear() { }
+	onClear() {}
 
-	onSearch(_: any) { }
+	onSearch(_: any) {}
 
-	onScroll() { }
+	onScroll() {}
 
-	onScrollToEnd() { }
+	onScrollToEnd() {}
 }
 
 @Component({
